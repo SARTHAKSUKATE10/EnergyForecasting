@@ -2,24 +2,59 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Energy Forecasting{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <nav>
-        <ul class="nav-list">
-            <li><a href="{{ url_for('index') }}">Home</a></li>
-            <li><a href="{{ url_for('about') }}">About</a></li>
-            <li><a href="{{ url_for('contact') }}">Contact</a></li>
-            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('sector') }}">Sectors</a></li>
-            
-        </ul>
+        <div class="nav-container">
+            <div class="logo">Energy Forecasting</div>
+            <div class="menu-toggle" id="mobile-menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <ul class="nav-list">
+                <li><a href="{{ url_for('index') }}">Home</a></li>
+                <li><a href="{{ url_for('about') }}">About</a></li>
+                <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('sector') }}">Sectors</a></li>
+            </ul>
+        </div>
     </nav>
     <div class="container">
         {% block content %}{% endblock %}
     </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navList = document.querySelector('.nav-list');
+
+        mobileMenu.addEventListener('click', function() {
+            // Use strict equality (===) to toggle active class
+            mobileMenu.classList.toggle('active') === true 
+                ? navList.classList.add('active')
+                : navList.classList.remove('active');
+        });
+
+        // Close mobile menu when a nav link is clicked
+        const navLinks = document.querySelectorAll('.nav-list li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                // Use strict equality (===) to remove active classes
+                mobileMenu.classList.contains('active') === true 
+                    && mobileMenu.classList.remove('active');
+                
+                navList.classList.contains('active') === true 
+                    && navList.classList.remove('active');
+            });
+        });
+    });
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
