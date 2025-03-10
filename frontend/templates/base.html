@@ -10,7 +10,9 @@
 <body>
     <nav>
         <div class="nav-container">
-            <div class="logo">Energy Forecasting</div>
+            <div class="logo">
+                <img src="https://img.freepik.com/premium-vector/renewable-energy-symbol-with-leaf-thunder-light-shape-combination-concept_267160-735.jpg?semt=ais_hybrid" alt="Energy Forecasting Logo" style="height: 50px;">
+            </div>
             <div class="menu-toggle" id="mobile-menu">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -56,5 +58,23 @@
     });
     </script>
     {% block extra_js %}{% endblock %}
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Energy Forecasting. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:info@energyforecasting.com">info@energyforecasting.com</a></p>
+        </div>
+    </footer>
+    <style>
+        .footer {
+            background-color: var(--secondary-color);
+            color: var(--white);
+            text-align: center;
+            padding: var(--spacing-md);
+            width: 100%;
+            box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            bottom: 0;
+        }
+    </style>
 </body>
 </html>

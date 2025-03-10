@@ -15,7 +15,7 @@
 }
 
 .dashboard-container {
-    max-width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     padding: var(--spacing-lg);
     background-color: var(--background-color);
@@ -106,14 +106,22 @@
 }
 
 .graph-container {
-    height: 400px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: var(--spacing-lg) auto;
+    max-width: 800px;
 }
 
 .graph-card h3 {
     text-align: center;
     color: var(--primary-color);
     margin-bottom: var(--spacing-md);
+}
+
+#sectorDistribution {
+    width: 100%;
+    max-width: 600px;
 }
 
 .recent-alerts {
