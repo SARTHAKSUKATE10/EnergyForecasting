@@ -15,7 +15,7 @@
 }
 
 .dashboard-container {
-    max-width: 1400px;
+    max-width: 100%;
     margin: 0 auto;
     padding: var(--spacing-lg);
     background-color: var(--background-color);
@@ -37,6 +37,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
+    max-width: 100%;
 }
 
 .stat-card {
@@ -81,6 +82,7 @@
 
 .dashboard-graphs {
     margin-bottom: var(--spacing-lg);
+    max-width: 100%;
 }
 
 .graph-section {
