@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}About Us{% endblock %}
+{% block title %}About Our Energy Forecasting Project{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
@@ -8,20 +8,75 @@
 
 {% block content %}
 <div class="about-container">
-    <h1>About Our Project</h1>
-    <p>This project aims to forecast energy efficiency for smart cities.</p>
+    <div class="about-header">
+        <h1>About Our Energy Forecasting Project</h1>
+        <p>Revolutionizing urban energy management through advanced predictive analytics and smart city solutions.</p>
+    </div>
 
-    <h2>Our Team</h2>
-    <div class="team">
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='images/team1.jpg') }}" alt="Team Member">
-            <h3>John Doe</h3>
-            <p>Lead Developer</p>
-        </div>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='images/team2.jpg') }}" alt="Team Member">
-            <h3>Jane Smith</h3>
-            <p>Data Scientist</p>
+    <div class="project-overview">
+        <h2>Our Mission</h2>
+        <p>We aim to transform urban energy efficiency by providing cutting-edge forecasting technologies that help cities optimize their energy consumption, reduce carbon footprint, and create sustainable urban environments.</p>
+    </div>
+
+    <div class="team-section">
+        <h2>Our Innovative Team</h2>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-card">
+                    <img src="https://t4.ftcdn.net/jpg/08/12/62/51/360_F_812625126_KjpcIlXPXa8WfQaPBEyxCmNzkdvzE7HK.jpg" alt="John Doe">
+                    <div class="member-info">
+                        <h3>John Doe</h3>
+                        <p>Lead Developer</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon">LinkedIn</a>
+                            <a href="#" class="social-icon">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <br>
+        <div class="team-grid">
+            <div class="team-member">
+                <div class="member-card">
+                    <img src="https://t4.ftcdn.net/jpg/08/12/62/51/360_F_812625126_KjpcIlXPXa8WfQaPBEyxCmNzkdvzE7HK.jpg" alt="Jane Smith">
+                    <div class="member-info">
+                        <h3>Jane Smith</h3>
+                        <p>Data Scientist</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon">LinkedIn</a>
+                            <a href="#" class="social-icon">Research Gate</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-card">
+                    <img src="https://t4.ftcdn.net/jpg/08/12/62/51/360_F_812625126_KjpcIlXPXa8WfQaPBEyxCmNzkdvzE7HK.jpg" alt="Mike Johnson">
+                    <div class="member-info">
+                        <h3>Mike Johnson</h3>
+                        <p>AI/ML Specialist</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon">LinkedIn</a>
+                            <a href="#" class="social-icon">Medium</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="team-member">
+                <div class="member-card">
+                    <img src="https://t4.ftcdn.net/jpg/08/12/62/51/360_F_812625126_KjpcIlXPXa8WfQaPBEyxCmNzkdvzE7HK.jpg" alt="Sarah Williams">
+                    <div class="member-info">
+                        <h3>Sarah Williams</h3>
+                        <p>Product Manager</p>
+                        <div class="social-links">
+                            <a href="#" class="social-icon">LinkedIn</a>
+                            <a href="#" class="social-icon">Twitter</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

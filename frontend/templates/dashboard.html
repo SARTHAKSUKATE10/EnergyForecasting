@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Energy Consumption Dashboard{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
@@ -8,16 +8,72 @@
 
 {% block content %}
 <div class="dashboard-container">
-    <h1>Energy Consumption Dashboard</h1>
-    <div class="dashboard-graphs">
-        <div class="graph-box">
+    <div class="dashboard-header">
+        <h1>Energy Consumption Dashboard</h1>
+        <p>Real-time insights into energy usage and trends</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card total-consumption">
+            <div class="stat-icon">⚡</div>
             <h3>Total Energy Consumption</h3>
-            <img src="{{ url_for('static', filename='images/graph1.png') }}" alt="Graph">
+            <p class="stat-value">12,000 MW</p>
+            <p class="stat-change positive">+2.3% from last month</p>
         </div>
-        <div class="graph-box">
-            <h3>Sector-wise Consumption</h3>
-            <img src="{{ url_for('static', filename='images/graph2.png') }}" alt="Graph">
+        <div class="stat-card peak-demand">
+            <div class="stat-icon">📈</div>
+            <h3>Peak Demand</h3>
+            <p class="stat-value">8,500 MW</p>
+            <p class="stat-change negative">-1.5% from last month</p>
+        </div>
+        <div class="stat-card renewable-energy">
+            <div class="stat-icon">🌿</div>
+            <h3>Renewable Energy</h3>
+            <p class="stat-value">35%</p>
+            <p class="stat-change positive">+5% from last year</p>
+        </div>
+    </div>
+
+    <div class="dashboard-graphs">
+        <div class="graph-section">
+            <div class="graph-card">
+                <h3>Total Energy Consumption Trend</h3>
+                <div class="graph-container">
+                    <canvas id="consumptionTrend"></canvas>
+                </div>
+            </div>
+            <div class="graph-card">
+                <h3>Sector-wise Energy Distribution</h3>
+                <div class="graph-container">
+                    <canvas id="sectorDistribution"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="recent-alerts">
+        <h2>Recent Alerts</h2>
+        <div class="alerts-grid">
+            <div class="alert-card warning">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-details">
+                    <h4>High Consumption Alert</h4>
+                    <p>Industrial sector exceeding expected consumption</p>
+                </div>
+            </div>
+            <div class="alert-card info">
+                <div class="alert-icon">ℹ️</div>
+                <div class="alert-details">
+                    <h4>Efficiency Improvement</h4>
+                    <p>Residential sector shows 10% energy savings</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}

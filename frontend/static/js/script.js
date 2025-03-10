@@ -61,35 +61,117 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        // Clear the previous output
+        document.getElementById("predictionOutput").innerText = "";
+
         // Build card-based HTML output
         const outputHTML = `
             <div class="card">
-                <h5>Total Energy</h5>
+                <h5>⚡ Total Energy</h5>
                 <p>${result["Total Energy"].toFixed(2)} kWh</p>
             </div>
             <div class="card">
-                <h5>Urban Usage</h5>
+                <h5>🏙️ Urban Usage</h5>
                 <p>${result["Urban Usage"].toFixed(2)} kWh</p>
                 <h6>Distribution:</h6>
                 <ul>
-                    <li>Household: ${result["Urban Distribution"]["Urban Household"].toFixed(2)} kWh</li>
-                    <li>Industrial: ${result["Urban Distribution"]["Urban Industrial"].toFixed(2)} kWh</li>
-                    <li>Commercial: ${result["Urban Distribution"]["Urban Commercial"].toFixed(2)} kWh</li>
-                    <li>Others: ${result["Urban Distribution"]["Urban Others"].toFixed(2)} kWh</li>
+                    <li>🏠 Household: ${result["Urban Distribution"]["Urban Household"].toFixed(2)} kWh</li>
+                    <li>🏭 Industrial: ${result["Urban Distribution"]["Urban Industrial"].toFixed(2)} kWh</li>
+                    <li>🏢 Commercial: ${result["Urban Distribution"]["Urban Commercial"].toFixed(2)} kWh</li>
+                    <li>🌐 Others: ${result["Urban Distribution"]["Urban Others"].toFixed(2)} kWh</li>
                 </ul>
             </div>
             <div class="card">
-                <h5>Rural Usage</h5>
+                <h5>🌾 Rural Usage</h5>
                 <p>${result["Rural Usage"].toFixed(2)} kWh</p>
                 <h6>Distribution:</h6>
                 <ul>
-                    <li>Household: ${result["Rural Distribution"]["Rural Household"].toFixed(2)} kWh</li>
-                    <li>Industrial: ${result["Rural Distribution"]["Rural Industrial"].toFixed(2)} kWh</li>
-                    <li>Commercial: ${result["Rural Distribution"]["Rural Commercial"].toFixed(2)} kWh</li>
-                    <li>Others: ${result["Rural Distribution"]["Rural Others"].toFixed(2)} kWh</li>
+                    <li>🏠 Household: ${result["Rural Distribution"]["Rural Household"].toFixed(2)} kWh</li>
+                    <li>🏭 Industrial: ${result["Rural Distribution"]["Rural Industrial"].toFixed(2)} kWh</li>
+                    <li>🏢 Commercial: ${result["Rural Distribution"]["Rural Commercial"].toFixed(2)} kWh</li>
+                    <li>🌐 Others: ${result["Rural Distribution"]["Rural Others"].toFixed(2)} kWh</li>
                 </ul>
             </div>
         `;
-        document.getElementById("predictionOutput").innerHTML = outputHTML;
+
+        // Make the energy-consumption-result section visible
+        const energyResultSection = document.getElementById("energyConsumptionResult");
+        energyResultSection.classList.add("active");
+        energyResultSection.style.display = "block";
+
+        // Update the content of the energy-consumption-result section
+        energyResultSection.innerHTML = outputHTML;
+
+        // Sample data for Total Energy Consumption Trend
+        const totalEnergyTrendData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Total Energy Consumption (kWh)',
+                data: [12000, 15000, 13000, 16000, 17000, 18000],
+                borderColor: '#FF5733',
+                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                fill: true,
+            }]
+        };
+
+        const totalEnergyTrendConfig = {
+            type: 'line',
+            data: totalEnergyTrendData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Total Energy Consumption Trend'
+                    }
+                }
+            },
+        };
+
+        new Chart(
+            document.getElementById('totalEnergyTrendChart'),
+            totalEnergyTrendConfig
+        );
+
+        // Sample data for Sector-wise Energy Distribution
+        const sectorWiseDistributionData = {
+            labels: ['Household', 'Industrial', 'Commercial', 'Others'],
+            datasets: [{
+                label: 'Energy Distribution (kWh)',
+                data: [5000, 7000, 3000, 2000],
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const sectorWiseDistributionConfig = {
+            type: 'doughnut',
+            data: sectorWiseDistributionData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sector-wise Energy Distribution'
+                    }
+                }
+            },
+        };
+
+        new Chart(
+            document.getElementById('sectorWiseDistributionChart'),
+            sectorWiseDistributionConfig
+        );
     }
 });
