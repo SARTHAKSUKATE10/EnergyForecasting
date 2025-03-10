@@ -90,6 +90,85 @@ document.addEventListener("DOMContentLoaded", function() {
                 </ul>
             </div>
         `;
-        document.getElementById("predictionOutput").innerHTML = outputHTML;
+
+        // Make the energy-consumption-result section visible
+        const energyResultSection = document.getElementById("energyConsumptionResult");
+        energyResultSection.classList.add("active");
+        energyResultSection.style.display = "block";
+
+        // Update the content of the energy-consumption-result section
+        energyResultSection.innerHTML = outputHTML;
+
+        // Sample data for Total Energy Consumption Trend
+        const totalEnergyTrendData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Total Energy Consumption (kWh)',
+                data: [12000, 15000, 13000, 16000, 17000, 18000],
+                borderColor: '#FF5733',
+                backgroundColor: 'rgba(255, 87, 51, 0.2)',
+                fill: true,
+            }]
+        };
+
+        const totalEnergyTrendConfig = {
+            type: 'line',
+            data: totalEnergyTrendData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Total Energy Consumption Trend'
+                    }
+                }
+            },
+        };
+
+        new Chart(
+            document.getElementById('totalEnergyTrendChart'),
+            totalEnergyTrendConfig
+        );
+
+        // Sample data for Sector-wise Energy Distribution
+        const sectorWiseDistributionData = {
+            labels: ['Household', 'Industrial', 'Commercial', 'Others'],
+            datasets: [{
+                label: 'Energy Distribution (kWh)',
+                data: [5000, 7000, 3000, 2000],
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0'
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const sectorWiseDistributionConfig = {
+            type: 'doughnut',
+            data: sectorWiseDistributionData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Sector-wise Energy Distribution'
+                    }
+                }
+            },
+        };
+
+        new Chart(
+            document.getElementById('sectorWiseDistributionChart'),
+            sectorWiseDistributionConfig
+        );
     }
 });

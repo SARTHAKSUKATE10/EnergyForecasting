@@ -139,6 +139,16 @@
         
     </div>
 
+    <div class="dashboard-section">
+        <h2>Dashboard</h2>
+        <div class="chart-container">
+            <canvas id="totalEnergyTrendChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="sectorWiseDistributionChart"></canvas>
+        </div>
+    </div>
+
     <div class="features-section">
         <h2>Why Choose Our Energy Forecasting?</h2>
         <div class="features-grid">
@@ -169,4 +179,8 @@
 
 {% block extra_js %}
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // JavaScript to initialize charts will be added here
+</script>
 {% endblock %}
