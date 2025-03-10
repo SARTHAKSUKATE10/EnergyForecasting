@@ -1,0 +1,171 @@
+/* Global Styles */
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #eef2f7;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Navigation */
+nav {
+  background-color: #007bff;
+  padding: 15px;
+  text-align: center;
+}
+
+.nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.nav-list li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.nav-list li a:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+/* Container */
+.container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* Headings */
+h1 {
+  color: #0056b3;
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+h2 {
+  color: #444;
+  font-size: 22px;
+  margin-top: 20px;
+}
+
+/* Input Groups */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.input-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Button */
+button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Output Box */
+.output-box {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  text-align: left;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin-top: 15px;
+}
+
+/* Card Styles for Prediction Results */
+.card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  background-color: #fff;
+}
+
+.card h5 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #0056b3;
+}
+
+.card p {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card ul li {
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.card ul li:last-child {
+  border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+    padding: 20px;
+  }
+  
+  button {
+    width: 100%;
+  }
+}

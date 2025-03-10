@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Sector-wise Energy{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sector.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="sector-container">
+    <h1>Sector-wise Energy Consumption</h1>
+    <div class="data-box">
+        <h3>Industrial Sector</h3>
+        <p>Consumption: 5000 MW</p>
+    </div>
+    <div class="data-box">
+        <h3>Residential Sector</h3>
+        <p>Consumption: 3000 MW</p>
+    </div>
+</div>
+{% endblock %}

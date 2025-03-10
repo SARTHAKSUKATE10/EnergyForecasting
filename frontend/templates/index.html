@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Energy Forecasting{% endblock %}
+
+{% block content %}
+<h1>⚡ Smart Energy Forecasting ⚡</h1>
+<p>Fill in the details below to predict energy consumption:</p>
+
+<form id="predictionForm">
+    <div class="input-group">
+        <label for="date">📅 Date:</label>
+        <input type="date" id="date" name="date" required>
+    </div>
+    <div class="input-group">
+        <label for="season">🌦 Season:</label>
+        <select id="season" name="season">
+            <option value="Summer">🌞 Summer</option>
+            <option value="Winter">❄️ Winter</option>
+            <option value="Monsoon">🌧 Monsoon</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label for="period">⏳ Period:</label>
+        <select id="period" name="period">
+            <option value="Pre-lockdown">🔄 Pre-lockdown</option>
+            <option value="Post-lockdown">🔓 Post-lockdown</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label for="temp">🌡 Temperature (°C):</label>
+        <input type="number" id="temp" name="temp" step="0.1" required>
+    </div>
+    <div class="input-group">
+        <label for="rainfall">🌧 Rainfall (mm):</label>
+        <input type="number" id="rainfall" name="rainfall" step="0.1">
+    </div>
+    <div class="input-group">
+        <label for="humidity">💧 Humidity (%):</label>
+        <input type="number" id="humidity" name="humidity" step="0.1" required>
+    </div>
+    <div class="input-group">
+        <label for="population">👥 Population:</label>
+        <input type="number" id="population" name="population" required>
+    </div>
+    <div class="input-group">
+        <label for="Festival">🎉 Festival:</label>
+        <select id="Festival" name="Festival" required>
+            <option value="0">🚫 No Festival</option>
+            <option value="1">🎊 Festival Day</option>
+        </select>
+    </div>
+    <button type="submit">⚡ Predict</button>
+</form>
+
+<h2>🔍 Prediction Result:</h2>
+<div id="predictionOutput" class="output-box">Waiting for input...</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

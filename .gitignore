@@ -1,0 +1,36 @@
+# ==== Environment Files ====
+venv/
+.env
+
+# ==== Python Ignore ====
+__pycache__/
+*.pyc
+*.pyo
+
+# ==== Node Modules ====
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# ==== Backend Ignore ====
+backend/__pycache__/
+backend/*.log
+
+# ==== Frontend Ignore ====
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/*.log
+
+# ==== Jupyter Notebook Ignore ====
+.ipynb_checkpoints/
+
+# ==== ML Model Files ====
+ML_Models/models/*.pth
+ML_Models/models/*.pkl
+
+
+# ==== Global Ignore ====
+*.log
+.DS_Store
+.vscode/

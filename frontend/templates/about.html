@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="about-container">
+    <h1>About Our Project</h1>
+    <p>This project aims to forecast energy efficiency for smart cities.</p>
+
+    <h2>Our Team</h2>
+    <div class="team">
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='images/team1.jpg') }}" alt="Team Member">
+            <h3>John Doe</h3>
+            <p>Lead Developer</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='images/team2.jpg') }}" alt="Team Member">
+            <h3>Jane Smith</h3>
+            <p>Data Scientist</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
