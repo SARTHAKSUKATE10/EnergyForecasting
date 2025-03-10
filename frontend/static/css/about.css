@@ -1,25 +1,125 @@
-.about-container {
-    text-align: center;
-    padding: 50px 20px;
+/* About Page Design System */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #0056b3;
+    --background-color: #f4f7f9;
+    --text-color: #333;
+    --white: #ffffff;
+    
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    
+    --transition-speed: 0.3s;
 }
 
-.team {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-lg);
+    background-color: var(--background-color);
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.about-header h1 {
+    color: var(--primary-color);
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.project-overview {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    background-color: var(--white);
+    padding: var(--spacing-lg);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.team-section h2 {
+    text-align: center;
+    color: var(--secondary-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-md);
 }
 
 .team-member {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 250px;
+    perspective: 1000px;
 }
 
-.team-member img {
+.member-card {
+    background-color: var(--white);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: 
+        transform var(--transition-speed),
+        box-shadow var(--transition-speed);
+}
+
+.member-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.member-card img {
     width: 100%;
-    border-radius: 10px;
+    height: 300px;
+    object-fit: cover;
+    transition: transform var(--transition-speed);
+}
+
+.member-card:hover img {
+    transform: scale(1.05);
+}
+
+.member-info {
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.member-info h3 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-xs);
+}
+
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}
+
+.social-icon {
+    text-decoration: none;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+    transition: color var(--transition-speed);
+}
+
+.social-icon:hover {
+    color: var(--primary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
 }

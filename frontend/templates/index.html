@@ -2,58 +2,117 @@
 
 {% block title %}Home - Energy Forecasting{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+{% endblock %}
+
 {% block content %}
-<h1>⚡ Smart Energy Forecasting ⚡</h1>
-<p>Fill in the details below to predict energy consumption:</p>
+<div class="home-container">
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1>⚡ Smart Energy Forecasting</h1>
+            <p>Revolutionizing urban energy management through advanced predictive analytics</p>
+        </div>
+    </div>
 
-<form id="predictionForm">
-    <div class="input-group">
-        <label for="date">📅 Date:</label>
-        <input type="date" id="date" name="date" required>
-    </div>
-    <div class="input-group">
-        <label for="season">🌦 Season:</label>
-        <select id="season" name="season">
-            <option value="Summer">🌞 Summer</option>
-            <option value="Winter">❄️ Winter</option>
-            <option value="Monsoon">🌧 Monsoon</option>
-        </select>
-    </div>
-    <div class="input-group">
-        <label for="period">⏳ Period:</label>
-        <select id="period" name="period">
-            <option value="Pre-lockdown">🔄 Pre-lockdown</option>
-            <option value="Post-lockdown">🔓 Post-lockdown</option>
-        </select>
-    </div>
-    <div class="input-group">
-        <label for="temp">🌡 Temperature (°C):</label>
-        <input type="number" id="temp" name="temp" step="0.1" required>
-    </div>
-    <div class="input-group">
-        <label for="rainfall">🌧 Rainfall (mm):</label>
-        <input type="number" id="rainfall" name="rainfall" step="0.1">
-    </div>
-    <div class="input-group">
-        <label for="humidity">💧 Humidity (%):</label>
-        <input type="number" id="humidity" name="humidity" step="0.1" required>
-    </div>
-    <div class="input-group">
-        <label for="population">👥 Population:</label>
-        <input type="number" id="population" name="population" required>
-    </div>
-    <div class="input-group">
-        <label for="Festival">🎉 Festival:</label>
-        <select id="Festival" name="Festival" required>
-            <option value="0">🚫 No Festival</option>
-            <option value="1">🎊 Festival Day</option>
-        </select>
-    </div>
-    <button type="submit">⚡ Predict</button>
-</form>
+    <div class="prediction-section">
+        <div class="prediction-header">
+            <h2>Energy Consumption Prediction</h2>
+            <p>Fill in the details below to predict energy consumption:</p>
+        </div>
 
-<h2>🔍 Prediction Result:</h2>
-<div id="predictionOutput" class="output-box">Waiting for input...</div>
+        <form id="predictionForm" class="prediction-form">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="date">📅 Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="season">🌦 Season</label>
+                    <select id="season" name="season">
+                        <option value="Summer">🌞 Summer</option>
+                        <option value="Winter">❄️ Winter</option>
+                        <option value="Monsoon">🌧 Monsoon</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="period">⏳ Period</label>
+                    <select id="period" name="period">
+                        <option value="Pre-lockdown">🔄 Pre-lockdown</option>
+                        <option value="Post-lockdown">🔓 Post-lockdown</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="temp">🌡 Temperature (°C)</label>
+                    <input type="number" id="temp" name="temp" step="0.1" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="rainfall">🌧 Rainfall (mm)</label>
+                    <input type="number" id="rainfall" name="rainfall" step="0.1">
+                </div>
+
+                <div class="input-group">
+                    <label for="humidity">💧 Humidity (%)</label>
+                    <input type="number" id="humidity" name="humidity" step="0.1" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="population">👥 Population</label>
+                    <input type="number" id="population" name="population" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="Festival">🎉 Festival</label>
+                    <select id="Festival" name="Festival" required>
+                        <option value="0">🚫 No Festival</option>
+                        <option value="1">🎊 Festival Day</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">⚡ Predict Energy Consumption</button>
+            </div>
+        </form>
+
+        <div class="prediction-result">
+            <h3>🔍 Prediction Result</h3>
+            <div id="predictionOutput" class="output-box">
+                Waiting for input...
+            </div>
+        </div>
+    </div>
+
+    <div class="features-section">
+        <h2>Why Choose Our Energy Forecasting?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Sustainable Solutions</h3>
+                <p>Optimize energy consumption for a greener future</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Advanced Analytics</h3>
+                <p>Cutting-edge predictive modeling techniques</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔮</div>
+                <h3>Accurate Predictions</h3>
+                <p>Machine learning algorithms with high precision</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Smart City Ready</h3>
+                <p>Designed for urban energy management</p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

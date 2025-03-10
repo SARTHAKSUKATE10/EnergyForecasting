@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Sector-wise Energy{% endblock %}
+{% block title %}Sector-wise Energy Consumption{% endblock %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sector.css') }}">
@@ -8,14 +8,72 @@
 
 {% block content %}
 <div class="sector-container">
-    <h1>Sector-wise Energy Consumption</h1>
-    <div class="data-box">
-        <h3>Industrial Sector</h3>
-        <p>Consumption: 5000 MW</p>
+    <div class="section-header">
+        <h1>Sector-wise Energy Consumption Analysis</h1>
+        <p>Comprehensive breakdown of energy consumption across different sectors</p>
     </div>
-    <div class="data-box">
-        <h3>Residential Sector</h3>
-        <p>Consumption: 3000 MW</p>
+
+    <div class="sectors-grid">
+        <div class="sector-card industrial">
+            <div class="sector-icon">🏭</div>
+            <h3>Industrial Sector</h3>
+            <div class="sector-details">
+                <p class="consumption">Consumption: 5000 MW</p>
+                <div class="consumption-chart">
+                    <div class="chart-bar" style="width: 75%"></div>
+                </div>
+                <p class="sector-description">
+                    Includes manufacturing, production, and heavy machinery operations
+                </p>
+            </div>
+        </div>
+
+        <div class="sector-card residential">
+            <div class="sector-icon">🏡</div>
+            <h3>Residential Sector</h3>
+            <div class="sector-details">
+                <p class="consumption">Consumption: 3000 MW</p>
+                <div class="consumption-chart">
+                    <div class="chart-bar" style="width: 45%"></div>
+                </div>
+                <p class="sector-description">
+                    Covers household electricity usage, lighting, and appliances
+                </p>
+            </div>
+        </div>
+
+        <div class="sector-card commercial">
+            <div class="sector-icon">🏢</div>
+            <h3>Commercial Sector</h3>
+            <div class="sector-details">
+                <p class="consumption">Consumption: 2500 MW</p>
+                <div class="consumption-chart">
+                    <div class="chart-bar" style="width: 38%"></div>
+                </div>
+                <p class="sector-description">
+                    Includes offices, retail spaces, and service-based businesses
+                </p>
+            </div>
+        </div>
+
+        <div class="sector-card agricultural">
+            <div class="sector-icon">🌾</div>
+            <h3>Agricultural Sector</h3>
+            <div class="sector-details">
+                <p class="consumption">Consumption: 1500 MW</p>
+                <div class="consumption-chart">
+                    <div class="chart-bar" style="width: 22%"></div>
+                </div>
+                <p class="sector-description">
+                    Irrigation, farming equipment, and agricultural processing
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="total-consumption">
+        <h2>Total Energy Consumption</h2>
+        <div class="total-value">12,000 MW</div>
     </div>
 </div>
 {% endblock %}
