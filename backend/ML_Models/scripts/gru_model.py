@@ -16,6 +16,10 @@ print(f"Using device: {device}")
 features_df = pd.read_csv("../data/features.csv")
 target_df = pd.read_csv("../data/target.csv")
 
+# Drop the Date column if it exists (prevents string-to-float conversion errors)
+if "Date" in features_df.columns:
+    features_df.drop(columns=["Date"], inplace=True)
+
 X = features_df.values.astype(np.float32)
 y = target_df.values.astype(np.float32).reshape(-1, 1)
 
@@ -68,7 +72,7 @@ criterion = nn.MSELoss()
 optimizer = optim.Adam(gru_model.parameters(), lr=0.0003, weight_decay=1e-4)
 
 # --- Training Loop ---
-num_epochs = 100
+num_epochs = 50
 batch_size = 32
 
 dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
@@ -90,6 +94,6 @@ for epoch in range(num_epochs):
 # --- Save the Vanilla GRU Model & Scalers ---
 MODEL_SAVE_PATH = "../models/vanilla_gru_model.pth"
 torch.save(gru_model.state_dict(), MODEL_SAVE_PATH)
-joblib.dump(X_scaler, "../models/X_scaler.pkl")  # Optionally use separate scaler files for different models
-joblib.dump(y_scaler, "../models/y_scaler.pkl")
+joblib.dump(X_scaler, "../models/X1_scaler.pkl")  # Save as X1_scaler.pkl for GRU
+joblib.dump(y_scaler, "../models/y1_scaler.pkl")  # Save as y1_scaler.pkl for GRU
 print("✅ Vanilla GRU model training completed and saved!")
