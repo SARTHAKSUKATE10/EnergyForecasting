@@ -59,6 +59,7 @@ nav {
   color: var(--white);
   font-weight: 700;
   font-size: 1.2rem;
+  border-radius: 25px;
 }
 
 .menu-toggle {
