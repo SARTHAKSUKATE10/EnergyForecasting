@@ -28,6 +28,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Initial data fetch
     updateSectorData();
 
+    // Call updateSectorData every 5 seconds to fetch real-time data
+    setInterval(updateSectorData, 5000);
+
     // Set interval to update data every 5 minutes
     setInterval(updateSectorData, 300000);
 });

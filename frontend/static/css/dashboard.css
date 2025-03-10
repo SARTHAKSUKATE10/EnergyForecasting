@@ -96,21 +96,25 @@
     border-radius: 15px;
     padding: var(--spacing-lg);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
-    margin-bottom: var(--spacing-lg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .graph-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .graph-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: var(--spacing-lg) auto;
-    max-width: 800px;
+    margin: var(--spacing-md) auto;
+    max-width: 600px;
 }
 
 .graph-card h3 {
@@ -121,7 +125,7 @@
 
 #sectorDistribution {
     width: 100%;
-    max-width: 600px;
+    max-width: 400px;
 }
 
 .recent-alerts {
@@ -153,6 +157,46 @@
 .alert-details h4 {
     margin-bottom: var(--spacing-xs);
     color: var(--primary-color);
+}
+
+.energy-card {
+    background-color: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-left: 5px solid #007bff; /* Blue border for Total Energy */
+}
+
+.energy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.energy-card h3 {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: var(--spacing-md);
+}
+
+.energy-card h6 {
+    font-size: 1rem; /* Reduced font size for a more subtle appearance */
+    color: #333;
+    margin-bottom: var(--spacing-xs);
+}
+
+.energy-card p {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.urban-card {
+    border-left-color: #28a745; /* Green border for Urban Usage */
+}
+
+.rural-card {
+    border-left-color: #ffc107; /* Yellow border for Rural Usage */
 }
 
 /* Responsive Design */

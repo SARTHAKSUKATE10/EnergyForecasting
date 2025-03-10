@@ -61,32 +61,35 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        // Clear the previous output
+        document.getElementById("predictionOutput").innerText = "";
+
         // Build card-based HTML output
         const outputHTML = `
             <div class="card">
-                <h5>Total Energy</h5>
+                <h5>⚡ Total Energy</h5>
                 <p>${result["Total Energy"].toFixed(2)} kWh</p>
             </div>
             <div class="card">
-                <h5>Urban Usage</h5>
+                <h5>🏙️ Urban Usage</h5>
                 <p>${result["Urban Usage"].toFixed(2)} kWh</p>
                 <h6>Distribution:</h6>
                 <ul>
-                    <li>Household: ${result["Urban Distribution"]["Urban Household"].toFixed(2)} kWh</li>
-                    <li>Industrial: ${result["Urban Distribution"]["Urban Industrial"].toFixed(2)} kWh</li>
-                    <li>Commercial: ${result["Urban Distribution"]["Urban Commercial"].toFixed(2)} kWh</li>
-                    <li>Others: ${result["Urban Distribution"]["Urban Others"].toFixed(2)} kWh</li>
+                    <li>🏠 Household: ${result["Urban Distribution"]["Urban Household"].toFixed(2)} kWh</li>
+                    <li>🏭 Industrial: ${result["Urban Distribution"]["Urban Industrial"].toFixed(2)} kWh</li>
+                    <li>🏢 Commercial: ${result["Urban Distribution"]["Urban Commercial"].toFixed(2)} kWh</li>
+                    <li>🌐 Others: ${result["Urban Distribution"]["Urban Others"].toFixed(2)} kWh</li>
                 </ul>
             </div>
             <div class="card">
-                <h5>Rural Usage</h5>
+                <h5>🌾 Rural Usage</h5>
                 <p>${result["Rural Usage"].toFixed(2)} kWh</p>
                 <h6>Distribution:</h6>
                 <ul>
-                    <li>Household: ${result["Rural Distribution"]["Rural Household"].toFixed(2)} kWh</li>
-                    <li>Industrial: ${result["Rural Distribution"]["Rural Industrial"].toFixed(2)} kWh</li>
-                    <li>Commercial: ${result["Rural Distribution"]["Rural Commercial"].toFixed(2)} kWh</li>
-                    <li>Others: ${result["Rural Distribution"]["Rural Others"].toFixed(2)} kWh</li>
+                    <li>🏠 Household: ${result["Rural Distribution"]["Rural Household"].toFixed(2)} kWh</li>
+                    <li>🏭 Industrial: ${result["Rural Distribution"]["Rural Industrial"].toFixed(2)} kWh</li>
+                    <li>🏢 Commercial: ${result["Rural Distribution"]["Rural Commercial"].toFixed(2)} kWh</li>
+                    <li>🌐 Others: ${result["Rural Distribution"]["Rural Others"].toFixed(2)} kWh</li>
                 </ul>
             </div>
         `;
