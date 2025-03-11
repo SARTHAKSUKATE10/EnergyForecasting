@@ -16,65 +16,59 @@ print(f"Using device: {device}")
 features_df = pd.read_csv("../data/features.csv")
 target_df = pd.read_csv("../data/target.csv")
 
-# Drop the Date column if it exists (prevents string-to-float conversion errors)
+# Drop the Date column if it exists
 if "Date" in features_df.columns:
     features_df.drop(columns=["Date"], inplace=True)
 
 X = features_df.values.astype(np.float32)
 y = target_df.values.astype(np.float32).reshape(-1, 1)
 
-# --- Split Train & Test Sets BEFORE Scaling ---
+# --- Split Train & Test Sets ---
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
 
-# --- Create Separate Scalers for X and y ---
+# --- Create Separate Scalers ---
 X_scaler = MinMaxScaler()
 y_scaler = MinMaxScaler()
 
-# Fit and transform the training data
 X_train_scaled = X_scaler.fit_transform(X_train)
 X_test_scaled = X_scaler.transform(X_test)
 y_train_scaled = y_scaler.fit_transform(y_train)
 y_test_scaled = y_scaler.transform(y_test)
 
-# Reshape for GRU: (samples, sequence_length, features)
-# Here, we treat each sample as a sequence of length 1.
+# Reshape for GRU
 X_train_scaled = X_train_scaled.reshape(X_train_scaled.shape[0], 1, X_train_scaled.shape[1])
 X_test_scaled = X_test_scaled.reshape(X_test_scaled.shape[0], 1, X_test_scaled.shape[1])
 
-# Convert to PyTorch tensors and move to device
 X_train_tensor = torch.tensor(X_train_scaled, dtype=torch.float32).to(device)
 y_train_tensor = torch.tensor(y_train_scaled, dtype=torch.float32).to(device)
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
 y_test_tensor = torch.tensor(y_test_scaled, dtype=torch.float32).to(device)
 
-# --- Define Vanilla GRU Model ---
-class VanillaGRUModel(nn.Module):
-    def __init__(self, input_dim, hidden_dim=64, num_layers=1):
-        super(VanillaGRUModel, self).__init__()
+# --- Define Weaker GRU Model ---
+class WeakGRUModel(nn.Module):
+    def __init__(self, input_dim, hidden_dim=32, num_layers=1):  # Reduced hidden_dim
+        super(WeakGRUModel, self).__init__()
         self.gru = nn.GRU(input_size=input_dim, hidden_size=hidden_dim, 
                           num_layers=num_layers, batch_first=True)
-        self.dropout = nn.Dropout(0.3)
-        self.fc = nn.Linear(hidden_dim, 1)
+        self.dropout = nn.Dropout(0.5)  # Increased dropout
+        self.fc = nn.Linear(hidden_dim, 1)  # Kept minimal neurons
         
     def forward(self, x):
-        # x shape: (batch_size, sequence_length, features)
         gru_out, _ = self.gru(x)
-        # Use the output from the last time step
         out = self.dropout(gru_out[:, -1, :])
         out = self.fc(out)
         return out
 
 input_dim = X.shape[1]
-gru_model = VanillaGRUModel(input_dim).to(device)
+gru_model = WeakGRUModel(input_dim).to(device)
 
 # --- Loss and Optimizer ---
 criterion = nn.MSELoss()
-optimizer = optim.Adam(gru_model.parameters(), lr=0.0003, weight_decay=1e-4)
+optimizer = optim.SGD(gru_model.parameters(), lr=0.01, weight_decay=1e-3)  # Switched to SGD, increased LR
 
 # --- Training Loop ---
-num_epochs = 50
+num_epochs = 20  # Reduced epochs
 batch_size = 32
-
 dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
@@ -88,12 +82,12 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
         total_loss += loss.item()
-    if epoch % 10 == 0:
+    if epoch % 5 == 0:
         print(f"Epoch [{epoch}/{num_epochs}], Loss: {total_loss / len(train_loader):.4f}")
 
-# --- Save the Vanilla GRU Model & Scalers ---
-MODEL_SAVE_PATH = "../models/vanilla_gru_model.pth"
+# --- Save the Weaker GRU Model & Scalers ---
+MODEL_SAVE_PATH = "../models/weak_gru_model.pth"
 torch.save(gru_model.state_dict(), MODEL_SAVE_PATH)
-joblib.dump(X_scaler, "../models/X1_scaler.pkl")  # Save as X1_scaler.pkl for GRU
-joblib.dump(y_scaler, "../models/y1_scaler.pkl")  # Save as y1_scaler.pkl for GRU
-print("✅ Vanilla GRU model training completed and saved!")
+joblib.dump(X_scaler, "../models/X1_scaler.pkl")
+joblib.dump(y_scaler, "../models/y1_scaler.pkl")
+print("✅ Weak GRU model training completed and saved!")

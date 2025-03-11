@@ -1,0 +1,13 @@
+Month,Average_High_C,Average_Low_C,Average_Rainfall_mm,Average_Humidity_%
+January,28,12,5,50
+February,31,14,7,45
+March,35,18,10,40
+April,37,21,20,35
+May,38,23,30,40
+June,30,22,200,75
+July,27,21,250,85
+August,27,21,220,85
+September,28,21,150,80
+October,30,19,80,70
+November,29,15,20,55
+December,28,12,10,50
