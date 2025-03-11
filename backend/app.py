@@ -68,7 +68,6 @@ def dashboard():
 def sector():
     return render_template("sector.html")
 
-
 ####################################
 # Prediction Endpoint
 ####################################
@@ -120,16 +119,7 @@ def predict():
             population=population
         )
 
-        # Multiply all values by 10000, round to 3 decimals, and convert to Python floats
-        updated_distribution = {}
-        for key, value in distribution.items():
-            if isinstance(value, dict):
-                updated_distribution[key] = {sub_key: round(float(sub_value) * 10000, 3)
-                                              for sub_key, sub_value in value.items()}
-            else:
-                updated_distribution[key] = round(float(value) * 10000, 3)
-
-        updated_distribution = convert_to_builtin_type(updated_distribution)
+        updated_distribution = convert_to_builtin_type(distribution)
         return jsonify(updated_distribution)
 
     except Exception as e:

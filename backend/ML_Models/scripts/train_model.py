@@ -16,6 +16,10 @@ print(f"Using device: {device}")
 features_df = pd.read_csv("../data/features.csv")
 target_df = pd.read_csv("../data/target.csv")
 
+# If there is a Date column, drop it to avoid conversion issues
+if "Date" in features_df.columns:
+    features_df = features_df.drop(columns=["Date"])
+
 X = features_df.values.astype(np.float32)
 y = target_df.values.astype(np.float32).reshape(-1, 1)
 

@@ -8,13 +8,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-
-# Add backend directory to sys.path (adjust path if needed)
-PROJECT_ROOT = r"C:\Users\jrsar\OneDrive\Desktop\FinalYearProject"
-sys.path.append(os.path.abspath(os.path.join(PROJECT_ROOT, "backend")))
-
-# Import your CNN-LSTM model from your utilities
-from ML_Models.utils.energy_forecast_utils import CNN_LSTM_Model
+from train_model import CNN_LSTM_Model  # Your CNN-LSTM model class
 
 # Define a Vanilla GRU model for comparison
 class VanillaGRUModel(torch.nn.Module):
@@ -22,74 +16,73 @@ class VanillaGRUModel(torch.nn.Module):
         super(VanillaGRUModel, self).__init__()
         self.gru = torch.nn.GRU(input_size=input_dim, hidden_size=hidden_dim,
                                 num_layers=num_layers, batch_first=True)
-        self.dropout = torch.nn.Dropout(0.3)
+        self.dropout = torch.nn.Dropout(0.5)
         self.fc = torch.nn.Linear(hidden_dim, 1)
         
     def forward(self, x):
-        # x shape: (batch_size, sequence_length, features)
         gru_out, _ = self.gru(x)
-        # Use output from the last time step
         out = self.dropout(gru_out[:, -1, :])
         out = self.fc(out)
         return out
 
-# ------------------ Data Loading ------------------
-# Paths to data and scalers
+# ------------------ Setup Paths ------------------
+PROJECT_ROOT = r"C:\Users\jrsar\OneDrive\Desktop\FinalYearProject"
 FEATURES_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "data", "features.csv")
 TARGET_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "data", "target.csv")
+
+# Scaler paths
 X_SCALER_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "X_scaler.pkl")
 Y_SCALER_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "y_scaler.pkl")
 
-# Load data
+# Model paths
+CNN_LSTM_MODEL_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "cnn_lstm_model.pth")
+GRU_MODEL_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "vanilla_gru_model.pth")
+
+# ------------------ Data Loading ------------------
 features_df = pd.read_csv(FEATURES_PATH)
 target_df = pd.read_csv(TARGET_PATH)
+
+if "Date" in features_df.columns:
+    features_df.drop(columns=["Date"], inplace=True)
 
 X = features_df.values.astype(np.float32)
 y = target_df.values.astype(np.float32).reshape(-1, 1)
 
-# Split data (using same non-shuffled split as training)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
+# ------------------ Split Data ------------------
+_, X_test, _, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
 
-# Load scalers (assumes they are saved correctly)
+# ------------------ Load Scalers ------------------
 X_scaler = joblib.load(X_SCALER_PATH)
 y_scaler = joblib.load(Y_SCALER_PATH)
 
-# Scale test data
+# Transform Test Data
 X_test_scaled = X_scaler.transform(X_test)
 y_test_scaled = y_scaler.transform(y_test)
-
-# Reshape for sequence input (both models expect 3D input: (samples, seq_len, features))
-# Here we treat each sample as a sequence of length 1.
 X_test_scaled = X_test_scaled.reshape(X_test_scaled.shape[0], 1, X_test_scaled.shape[1])
 
-# Convert test data to torch tensors
+# Convert to torch tensors
 X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 X_test_tensor = X_test_tensor.to(device)
 
 # ------------------ Load Models ------------------
-input_dim = X.shape[1]  # number of features
+input_dim = X.shape[1]
 
-# Load the hybrid CNN-LSTM model
 cnn_lstm_model = CNN_LSTM_Model(input_dim).to(device)
-cnn_lstm_model_path = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "cnn_lstm_model.pth")
-cnn_lstm_model.load_state_dict(torch.load(cnn_lstm_model_path, map_location=device))
+cnn_lstm_model.load_state_dict(torch.load(CNN_LSTM_MODEL_PATH, map_location=device))
 cnn_lstm_model.eval()
 
-# Load the Vanilla GRU model
 gru_model = VanillaGRUModel(input_dim).to(device)
-gru_model_path = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "vanilla_gru_model.pth")
-gru_model.load_state_dict(torch.load(gru_model_path, map_location=device))
+gru_model.load_state_dict(torch.load(GRU_MODEL_PATH, map_location=device))
 gru_model.eval()
 
 # ------------------ Make Predictions ------------------
 with torch.no_grad():
-    # CNN-LSTM predictions (in scaled space)
     cnn_lstm_pred_scaled = cnn_lstm_model(X_test_tensor).cpu().numpy()
-    # GRU predictions (in scaled space)
     gru_pred_scaled = gru_model(X_test_tensor).cpu().numpy()
 
-# Inverse transform predictions to original scale
+# Inverse transform predictions
 cnn_lstm_pred = y_scaler.inverse_transform(cnn_lstm_pred_scaled)
 gru_pred = y_scaler.inverse_transform(gru_pred_scaled)
 
@@ -110,13 +103,11 @@ print("\nVanilla GRU Model Performance:")
 print(f"  MAE: {mae_gru:.4f}, RMSE: {rmse_gru:.4f}, R²: {r2_gru:.4f}")
 
 # ------------------ Plot Predictions ------------------
-# Create a sample index for plotting (you can also use actual time indices if available)
 x = np.arange(len(y_test))
-
 plt.figure(figsize=(12, 6))
-plt.plot(x, y_test, label="Actual", marker="o", color="blue")
-plt.plot(x, cnn_lstm_pred, label="CNN-LSTM Predictions", marker="o", linestyle="--", color="red")
-plt.plot(x, gru_pred, label="GRU Predictions", marker="o", linestyle="--", color="green")
+plt.plot(x, y_test.ravel(), label="Actual", marker="o", color="blue")
+plt.plot(x, cnn_lstm_pred.ravel(), label="CNN-LSTM Predictions", marker="o", linestyle="--", color="red")
+plt.plot(x, gru_pred.ravel(), label="GRU Predictions", marker="o", linestyle="--", color="green")
 plt.xlabel("Sample Index")
 plt.ylabel("Energy Usage (kWh)")
 plt.title("Actual vs. Predicted Energy Usage (Test Data)")
