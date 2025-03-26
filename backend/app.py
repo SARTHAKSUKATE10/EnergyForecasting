@@ -126,6 +126,18 @@ def predict():
         return jsonify({"error": str(e)}), 400
 
 ####################################
+# Additional Feature: Logging Requests
+####################################
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+@app.before_request
+def log_request_info():
+    logging.info(f"Request Headers: {request.headers}")
+    logging.info(f"Request Body: {request.get_data()}")
+
+####################################
 # Run the App
 ####################################
 if __name__ == "__main__":

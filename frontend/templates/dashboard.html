@@ -13,27 +13,70 @@
         <p>Real-time insights into energy usage and trends</p>
     </div>
 
+    <!-- User Input Section -->
+    <div class="input-section">
+        <label for="month">Select Month:</label>
+        <select id="month">
+            {% for m in range(1, 13) %}
+                <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="year">Select Year:</label>
+        <select id="year">
+            {% for y in range(2015, 2026) %}
+                <option value="{{ y }}">{{ y }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="season">Season:</label>
+        <select id="season">
+            <option value="Summer">Summer</option>
+            <option value="Winter">Winter</option>
+            <option value="Monsoon">Monsoon</option>
+        </select>
+
+        <label for="period">Period:</label>
+        <select id="period">
+            <option value="Pre-lockdown">Pre-lockdown</option>
+            <option value="Post-lockdown">Post-lockdown</option>
+        </select>
+
+        <label for="temp">Temperature (°C):</label>
+        <input type="number" id="temp" value="30">
+
+        <label for="humidity">Humidity (%):</label>
+        <input type="number" id="humidity" value="50">
+
+        <label for="rainfall">Rainfall (mm):</label>
+        <input type="number" id="rainfall" value="0">
+
+        <label for="population">Population:</label>
+        <input type="number" id="population" value="1000000">
+
+        <button id="fetchData">Get Prediction</button>
+    </div>
+
+    <!-- Statistics Section -->
     <div class="dashboard-stats">
         <div class="stat-card total-consumption">
             <div class="stat-icon">⚡</div>
             <h3>Total Energy Consumption</h3>
-            <p class="stat-value">12,000 MW</p>
-            <p class="stat-change positive">+2.3% from last month</p>
+            <p class="stat-value" id="totalEnergy">-</p>
         </div>
         <div class="stat-card peak-demand">
             <div class="stat-icon">📈</div>
             <h3>Peak Demand</h3>
-            <p class="stat-value">8,500 MW</p>
-            <p class="stat-change negative">-1.5% from last month</p>
+            <p class="stat-value" id="peakDemand">-</p>
         </div>
         <div class="stat-card renewable-energy">
             <div class="stat-icon">🌿</div>
             <h3>Renewable Energy</h3>
-            <p class="stat-value">35%</p>
-            <p class="stat-change positive">+5% from last year</p>
+            <p class="stat-value" id="renewableEnergy">-</p>
         </div>
     </div>
 
+    <!-- Graphs Section -->
     <div class="dashboard-graphs">
         <div class="graph-section">
             <div class="graph-card">
@@ -50,26 +93,6 @@
             </div>
         </div>
     </div>
-
-    <div class="recent-alerts">
-        <h2>Recent Alerts</h2>
-        <div class="alerts-grid">
-            <div class="alert-card warning">
-                <div class="alert-icon">⚠️</div>
-                <div class="alert-details">
-                    <h4>High Consumption Alert</h4>
-                    <p>Industrial sector exceeding expected consumption</p>
-                </div>
-            </div>
-            <div class="alert-card info">
-                <div class="alert-icon">ℹ️</div>
-                <div class="alert-details">
-                    <h4>Efficiency Improvement</h4>
-                    <p>Residential sector shows 10% energy savings</p>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 {% endblock %}
 
@@ -77,3 +100,4 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}
+
