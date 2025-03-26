@@ -102,46 +102,23 @@ document.addEventListener("DOMContentLoaded", function() {
         // Update the content of the energy-consumption-result section
         energyResultSection.innerHTML = outputHTML;
 
-        // Sample data for Total Energy Consumption Trend
-        const totalEnergyTrendData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-            datasets: [{
-                label: 'Total Energy Consumption (kWh)',
-                data: [12000, 15000, 13000, 16000, 17000, 18000],
-                borderColor: '#FF5733',
-                backgroundColor: 'rgba(255, 87, 51, 0.2)',
-                fill: true,
-            }]
-        };
-
-        const totalEnergyTrendConfig = {
-            type: 'line',
-            data: totalEnergyTrendData,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Total Energy Consumption Trend'
-                    }
-                }
-            },
-        };
-
-        new Chart(
-            document.getElementById('totalEnergyTrendChart'),
-            totalEnergyTrendConfig
-        );
+        // Remove the line chart element from DOM (if exists)
+        const totalEnergyTrendChart = document.getElementById("totalEnergyTrendChart");
+        if (totalEnergyTrendChart) {
+            totalEnergyTrendChart.remove();
+        }
 
         // Sample data for Sector-wise Energy Distribution
         const sectorWiseDistributionData = {
             labels: ['Household', 'Industrial', 'Commercial', 'Others'],
             datasets: [{
                 label: 'Energy Distribution (kWh)',
-                data: [5000, 7000, 3000, 2000],
+                data: [
+                    result["Urban Distribution"]["Urban Household"] + result["Rural Distribution"]["Rural Household"],
+                    result["Urban Distribution"]["Urban Industrial"] + result["Rural Distribution"]["Rural Industrial"],
+                    result["Urban Distribution"]["Urban Commercial"] + result["Rural Distribution"]["Rural Commercial"],
+                    result["Urban Distribution"]["Urban Others"] + result["Rural Distribution"]["Rural Others"]
+                ],
                 backgroundColor: [
                     '#FF6384',
                     '#36A2EB',

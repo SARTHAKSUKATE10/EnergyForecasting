@@ -49,7 +49,7 @@ model.eval()
 # 3. Predict Energy Usage for Oct 2024 - Dec 2025
 # ------------------------------------------------------------------
 predicted_usage = []
-date_range = pd.date_range(start="2024-10-01", periods=15, freq="M")
+date_range = pd.date_range(start="2024-10-01", periods=15, freq="ME")  # Fixed 'M' -> 'ME'
 
 for date in date_range:
     timestamp = date.timestamp()

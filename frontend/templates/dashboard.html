@@ -10,62 +10,79 @@
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h1>Energy Consumption Dashboard</h1>
-        <p>Real-time insights into energy usage and trends</p>
+        <p>Monitor energy trends and forecasts for smart cities</p>
     </div>
 
+    <!-- 🔹 Summary Statistics -->
     <div class="dashboard-stats">
-        <div class="stat-card total-consumption">
+        <div class="stat-card total-energy">
             <div class="stat-icon">⚡</div>
-            <h3>Total Energy Consumption</h3>
-            <p class="stat-value">12,000 MW</p>
-            <p class="stat-change positive">+2.3% from last month</p>
+            <h3>Total Energy</h3>
+            <p class="stat-value" id="totalEnergy">Loading...</p>
         </div>
-        <div class="stat-card peak-demand">
-            <div class="stat-icon">📈</div>
-            <h3>Peak Demand</h3>
-            <p class="stat-value">8,500 MW</p>
-            <p class="stat-change negative">-1.5% from last month</p>
+        <div class="stat-card urban-energy">
+            <div class="stat-icon">🏙️</div>
+            <h3>Urban Energy</h3>
+            <p class="stat-value" id="urbanEnergy">Loading...</p>
         </div>
-        <div class="stat-card renewable-energy">
-            <div class="stat-icon">🌿</div>
-            <h3>Renewable Energy</h3>
-            <p class="stat-value">35%</p>
-            <p class="stat-change positive">+5% from last year</p>
+        <div class="stat-card rural-energy">
+            <div class="stat-icon">🌾</div>
+            <h3>Rural Energy</h3>
+            <p class="stat-value" id="ruralEnergy">Loading...</p>
         </div>
     </div>
 
+    <!-- 🔹 Month-wise Prediction Input -->
+    <div class="month-selection">
+        <label for="monthDropdown">Select Month:</label>
+        <select id="monthDropdown">
+            <option value="January">January</option>
+            <option value="February">February</option>
+            <option value="March">March</option>
+            <option value="April">April</option>
+            <option value="May">May</option>
+            <option value="June">June</option>
+            <option value="July">July</option>
+            <option value="August">August</option>
+            <option value="September">September</option>
+            <option value="October">October</option>
+            <option value="November">November</option>
+            <option value="December">December</option>
+        </select>
+    </div>
+
+    <!-- 🔹 Graphs Section -->
     <div class="dashboard-graphs">
-        <div class="graph-section">
-            <div class="graph-card">
-                <h3>Total Energy Consumption Trend</h3>
-                <div class="graph-container">
-                    <canvas id="consumptionTrend"></canvas>
-                </div>
+        <div class="graph-card">
+            <h3>Monthly Energy Consumption</h3>
+            <div class="graph-container">
+                <canvas id="monthlyConsumptionChart"></canvas>
             </div>
-            <div class="graph-card">
-                <h3>Sector-wise Energy Distribution</h3>
-                <div class="graph-container">
-                    <canvas id="sectorDistribution"></canvas>
-                </div>
+        </div>
+        <div class="graph-card">
+            <h3>Sector-wise Energy Distribution</h3>
+            <div class="graph-container">
+                <canvas id="sectorDistributionChart"></canvas>
             </div>
         </div>
     </div>
 
+    <!-- 🔹 Alerts -->
     <div class="recent-alerts">
-        <h2>Recent Alerts</h2>
+        <h2>Recent Insights</h2>
         <div class="alerts-grid">
             <div class="alert-card warning">
                 <div class="alert-icon">⚠️</div>
                 <div class="alert-details">
                     <h4>High Consumption Alert</h4>
-                    <p>Industrial sector exceeding expected consumption</p>
+                    <p>Industrial sector exceeding expected limits</p>
                 </div>
             </div>
             <div class="alert-card info">
                 <div class="alert-icon">ℹ️</div>
                 <div class="alert-details">
-                    <h4>Efficiency Improvement</h4>
-                    <p>Residential sector shows 10% energy savings</p>
+                    <h4>Renewable Energy Growth</h4>
+                    <p>35% of total energy now from renewables</p>
                 </div>
             </div>
         </div>
