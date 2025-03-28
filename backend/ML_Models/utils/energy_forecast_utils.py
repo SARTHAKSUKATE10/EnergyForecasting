@@ -18,7 +18,7 @@ class CNN_LSTM_Model(nn.Module):
     def forward(self, x):
         x = torch.relu(self.conv1(x))
         x = torch.relu(self.conv2(x))
-        x = x.permute(0, 2, 1)  # Rearrange for LSTM
+        x = x.permute(0, 2, 1)  
         x, _ = self.lstm(x)
         x = self.dropout(x[:, -1, :])
         x = torch.relu(self.fc1(x))
@@ -73,8 +73,7 @@ def compute_energy_distribution(total_energy, season, period, festival_effect=1.
     }
     festival_multipliers = {
         "Normal Day": 1.00,
-        "Small Festival": 1.10,
-        "Big Festival": 1.20,
+        "Festival": 1.10,
     }
 
     season_factor = season_multipliers.get(season, 1.0)
@@ -83,9 +82,9 @@ def compute_energy_distribution(total_energy, season, period, festival_effect=1.
 
     # Weather & Population impact (Adjusted Formula)
     temp_factor = 1.0 + (temp - 30.0) / 100.0
-    rainfall_factor = max(1.0 - (rainfall / 200.0), 0.5)  # Avoids negative impact
+    rainfall_factor = max(1.0 - (rainfall / 200.0), 0.5)  
     humidity_factor = 1.0 + (humidity - 50.0) / 200.0
-    population_factor = 1.0 + (population - 1000000) / 10000000.0  # Normalize population impact
+    population_factor = 1.0 + (population - 1000000) / 10000000.0  
 
     # Combined Effect
     weather_population_factor = (temp_factor + rainfall_factor + humidity_factor + population_factor) / 4

@@ -1,25 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize all charts
-    let historicalYearlyChart = null;
-    let historicalMonthlyChart = null;
-    let sectorDistributionChart = null;
-    let renewableEnergyChart = null;
-    let peakDemandChart = null;
-    let tempEnergyChart = null;
+    let yearlyBarChart = null;
+    let yearlyLineChart = null;
+    let yearlyPieChart = null;
+    let monthlyBarChart = null;
+    let monthlyLineChart = null;
+    let monthlyPieChart = null;
 
     // Function to initialize charts
     function initCharts() {
-        // Historical Yearly Consumption
-        const ctx1 = document.getElementById("historicalYearly").getContext("2d");
-        historicalYearlyChart = new Chart(ctx1, {
+        // Yearly Consumption - Bar Chart
+        const ctxYearlyBar = document.getElementById("yearlyBarChart").getContext("2d");
+        yearlyBarChart = new Chart(ctxYearlyBar, {
             type: "bar",
             data: {
                 labels: [],
                 datasets: [{
                     label: "Yearly Consumption (MW)",
                     data: [],
-                    backgroundColor: "rgba(255, 87, 51, 0.5)",
-                    borderColor: "#FF5733",
+                    backgroundColor: "rgba(76, 175, 80, 0.5)",
+                    borderColor: "#4CAF50",
                     borderWidth: 1
                 }]
             },
@@ -48,17 +48,123 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Historical Monthly Consumption
-        const ctx2 = document.getElementById("historicalMonthly").getContext("2d");
-        historicalMonthlyChart = new Chart(ctx2, {
+        // Yearly Consumption - Line Chart
+        const ctxYearlyLine = document.getElementById("yearlyLineChart").getContext("2d");
+        yearlyLineChart = new Chart(ctxYearlyLine, {
+            type: "line",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Yearly Consumption (MW)",
+                    data: [],
+                    borderColor: "#2196F3",
+                    backgroundColor: "rgba(33, 150, 243, 0.2)",
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Energy Consumption (MW)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Year'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+        // Yearly Consumption - Pie Chart
+        const ctxYearlyPie = document.getElementById("yearlyPieChart").getContext("2d");
+        yearlyPieChart = new Chart(ctxYearlyPie, {
+            type: "pie",
+            data: {
+                labels: [],
+                datasets: [{
+                    data: [],
+                    backgroundColor: [
+                        "#4CAF50",
+                        "#2196F3",
+                        "#FFC107",
+                        "#9C27B0",
+                        "#00BCD4"
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right'
+                    }
+                }
+            }
+        });
+
+        // Monthly Consumption - Bar Chart
+        const ctxMonthlyBar = document.getElementById("monthlyBarChart").getContext("2d");
+        monthlyBarChart = new Chart(ctxMonthlyBar, {
+            type: "bar",
+            data: {
+                labels: [],
+                datasets: [{
+                    label: "Monthly Consumption (MW)",
+                    data: [],
+                    backgroundColor: "rgba(255, 87, 51, 0.5)",
+                    borderColor: "#FF5733",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Energy Consumption (MW)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    }
+                }
+            }
+        });
+
+        // Monthly Consumption - Line Chart
+        const ctxMonthlyLine = document.getElementById("monthlyLineChart").getContext("2d");
+        monthlyLineChart = new Chart(ctxMonthlyLine, {
             type: "line",
             data: {
                 labels: [],
                 datasets: [{
                     label: "Monthly Consumption (MW)",
                     data: [],
-                    borderColor: "#4CAF50",
-                    backgroundColor: "rgba(76, 175, 80, 0.2)",
+                    borderColor: "#FF5733",
+                    backgroundColor: "rgba(255, 87, 51, 0.2)",
                     fill: true,
                     tension: 0.3
                 }]
@@ -88,16 +194,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Sector Distribution
-        const ctx3 = document.getElementById("sectorDistribution").getContext("2d");
-        sectorDistributionChart = new Chart(ctx3, {
-            type: "doughnut",
+        // Monthly Consumption - Pie Chart
+        const ctxMonthlyPie = document.getElementById("monthlyPieChart").getContext("2d");
+        monthlyPieChart = new Chart(ctxMonthlyPie, {
+            type: "pie",
             data: {
-                labels: ["Household", "Industrial", "Commercial", "Others"],
+                labels: [],
                 datasets: [{
                     data: [],
-                    backgroundColor: ["#FF5733", "#4CAF50", "#03A9F4", "#FFC107"],
-                    hoverOffset: 4
+                    backgroundColor: [
+                        "#FF5733",
+                        "#4CAF50",
+                        "#2196F3",
+                        "#FFC107",
+                        "#9C27B0"
+                    ]
                 }]
             },
             options: {
@@ -105,129 +216,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 plugins: {
                     legend: {
                         position: 'right'
-                    }
-                }
-            }
-        });
-
-        // Renewable vs Non-Renewable Energy
-        const ctx4 = document.getElementById("renewableEnergy").getContext("2d");
-        renewableEnergyChart = new Chart(ctx4, {
-            type: "bar",
-            data: {
-                labels: [],
-                datasets: [{
-                    label: "Renewable Energy (MW)",
-                    data: [],
-                    backgroundColor: "rgba(76, 175, 80, 0.5)",
-                    borderColor: "#4CAF50",
-                    borderWidth: 1
-                }, {
-                    label: "Non-Renewable Energy (MW)",
-                    data: [],
-                    backgroundColor: "rgba(255, 87, 51, 0.5)",
-                    borderColor: "#FF5733",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Energy Consumption (MW)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Year'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
-        });
-
-        // Peak Demand Hours
-        const ctx5 = document.getElementById("peakDemandHours").getContext("2d");
-        peakDemandChart = new Chart(ctx5, {
-            type: "line",
-            data: {
-                labels: ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00"],
-                datasets: [{
-                    label: "Average Demand (MW)",
-                    data: [],
-                    borderColor: "#FF5733",
-                    backgroundColor: "rgba(255, 87, 51, 0.2)",
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Energy Demand (MW)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Time of Day'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
-                    }
-                }
-            }
-        });
-
-        // Temperature vs Energy Consumption
-        const ctx6 = document.getElementById("tempEnergy").getContext("2d");
-        tempEnergyChart = new Chart(ctx6, {
-            type: "scatter",
-            data: {
-                datasets: [{
-                    label: "Energy Consumption vs Temperature",
-                    data: [],
-                    backgroundColor: "rgba(76, 175, 80, 0.5)",
-                    borderColor: "#4CAF50",
-                    pointRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Energy Consumption (MW)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Temperature (°C)'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top'
                     }
                 }
             }
@@ -243,57 +231,43 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch('/get_historical_data');
             const data = await response.json();
 
-            // Update all charts
-            updateCharts(data);
+            // Update Yearly Charts
+            if (data.years && data.total_consumption) {
+                // Bar Chart
+                yearlyBarChart.data.labels = data.years;
+                yearlyBarChart.data.datasets[0].data = data.total_consumption;
+                yearlyBarChart.update();
+
+                // Line Chart
+                yearlyLineChart.data.labels = data.years;
+                yearlyLineChart.data.datasets[0].data = data.total_consumption;
+                yearlyLineChart.update();
+
+                // Pie Chart
+                yearlyPieChart.data.labels = data.years;
+                yearlyPieChart.data.datasets[0].data = data.total_consumption;
+                yearlyPieChart.update();
+            }
+
+            // Update Monthly Charts
+            if (data.months && data.monthly_consumption) {
+                // Bar Chart
+                monthlyBarChart.data.labels = data.months;
+                monthlyBarChart.data.datasets[0].data = data.monthly_consumption;
+                monthlyBarChart.update();
+
+                // Line Chart
+                monthlyLineChart.data.labels = data.months;
+                monthlyLineChart.data.datasets[0].data = data.monthly_consumption;
+                monthlyLineChart.update();
+
+                // Pie Chart
+                monthlyPieChart.data.labels = data.months;
+                monthlyPieChart.data.datasets[0].data = data.monthly_consumption;
+                monthlyPieChart.update();
+            }
         } catch (error) {
             console.error('Error fetching historical data:', error);
-        }
-    }
-
-    // Function to update all charts with new data
-    function updateCharts(data) {
-        // Update Historical Yearly Consumption
-        if (data.years) {
-            historicalYearlyChart.data.labels = data.years;
-            historicalYearlyChart.data.datasets[0].data = data.total_consumption;
-            historicalYearlyChart.update();
-        }
-
-        // Update Historical Monthly Consumption
-        if (data.months) {
-            historicalMonthlyChart.data.labels = data.months;
-            historicalMonthlyChart.data.datasets[0].data = data.monthly_consumption;
-            historicalMonthlyChart.update();
-        }
-
-        // Update Sector Distribution
-        if (data.sector_distribution) {
-            sectorDistributionChart.data.datasets[0].data = Object.values(data.sector_distribution);
-            sectorDistributionChart.data.labels = Object.keys(data.sector_distribution);
-            sectorDistributionChart.update();
-        }
-
-        // Update Renewable vs Non-Renewable Energy
-        if (data.renewable_data) {
-            renewableEnergyChart.data.labels = data.renewable_data.years;
-            renewableEnergyChart.data.datasets[0].data = data.renewable_data.renewable;
-            renewableEnergyChart.data.datasets[1].data = data.renewable_data.non_renewable;
-            renewableEnergyChart.update();
-        }
-
-        // Update Peak Demand Hours
-        if (data.peak_demand) {
-            peakDemandChart.data.datasets[0].data = data.peak_demand.values;
-            peakDemandChart.update();
-        }
-
-        // Update Temperature vs Energy Consumption
-        if (data.temp_energy) {
-            tempEnergyChart.data.datasets[0].data = data.temp_energy.map(point => ({
-                x: point.temp,
-                y: point.energy
-            }));
-            tempEnergyChart.update();
         }
     }
 

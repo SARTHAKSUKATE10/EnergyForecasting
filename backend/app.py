@@ -64,10 +64,6 @@ def contact():
 def dashboard():
     return render_template("dashboard.html")
 
-@app.route("/sector")
-def sector():
-    return render_template("sector.html")
-
 ####################################
 # Prediction Endpoint
 ####################################
