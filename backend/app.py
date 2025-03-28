@@ -126,6 +126,87 @@ def predict():
         return jsonify({"error": str(e)}), 400
 
 ####################################
+# Historical Data Endpoint
+####################################
+@app.route("/get_historical_data")
+def get_historical_data():
+    try:
+        # Generate sample historical data
+        years = list(range(2015, 2025))
+        total_consumption = []
+        
+        # Generate yearly consumption data (example: increasing trend)
+        base_consumption = 1000.0  # Base consumption in MW
+        growth_rate = 0.05  # 5% growth per year
+        
+        for year in years:
+            consumption = base_consumption * (1 + growth_rate) ** (year - 2015)
+            total_consumption.append(float(consumption))
+
+        # Generate monthly consumption data for the latest year
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        latest_year_consumption = total_consumption[-1]
+        monthly_consumption = []
+        
+        # Generate monthly data with seasonal variations
+        for month in range(12):
+            # Example seasonal variation: higher in summer, lower in winter
+            if month in [5, 6, 7]:  # Summer months
+                multiplier = 1.2
+            elif month in [11, 0, 1]:  # Winter months
+                multiplier = 0.8
+            else:
+                multiplier = 1.0
+            
+            monthly_consumption.append(float(latest_year_consumption * multiplier / 12))
+
+        # Generate sector distribution data
+        sector_distribution = {
+            "household": latest_year_consumption * 0.30,
+            "industrial": latest_year_consumption * 0.40,
+            "commercial": latest_year_consumption * 0.20,
+            "others": latest_year_consumption * 0.10
+        }
+
+        # Generate renewable vs non-renewable data
+        renewable_data = {
+            "years": [str(y) for y in years],
+            "renewable": [float(consumption * 0.30) for consumption in total_consumption],
+            "non_renewable": [float(consumption * 0.70) for consumption in total_consumption]
+        }
+
+        # Generate peak demand hours data
+        peak_demand = {
+            "values": [2000, 2200, 3500, 4500, 4000, 3000]  # Example peak demand values
+        }
+
+        # Generate temperature vs energy consumption data
+        temp_energy = [
+            {"temp": 15, "energy": 2500},
+            {"temp": 20, "energy": 2800},
+            {"temp": 25, "energy": 3200},
+            {"temp": 30, "energy": 3800},
+            {"temp": 35, "energy": 4500},
+            {"temp": 40, "energy": 5200}
+        ]
+
+        response = {
+            "years": [str(y) for y in years],
+            "total_consumption": total_consumption,
+            "months": months,
+            "monthly_consumption": monthly_consumption,
+            "sector_distribution": sector_distribution,
+            "renewable_data": renewable_data,
+            "peak_demand": peak_demand,
+            "temp_energy": temp_energy
+        }
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+####################################
 # Additional Feature: Logging Requests
 ####################################
 import logging

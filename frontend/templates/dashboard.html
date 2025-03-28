@@ -10,85 +10,55 @@
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h1>Energy Consumption Dashboard</h1>
-        <p>Real-time insights into energy usage and trends</p>
-    </div>
-
-    <!-- User Input Section -->
-    <div class="input-section">
-        <label for="month">Select Month:</label>
-        <select id="month">
-            {% for m in range(1, 13) %}
-                <option value="{{ m }}">{{ m }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="year">Select Year:</label>
-        <select id="year">
-            {% for y in range(2015, 2026) %}
-                <option value="{{ y }}">{{ y }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="season">Season:</label>
-        <select id="season">
-            <option value="Summer">Summer</option>
-            <option value="Winter">Winter</option>
-            <option value="Monsoon">Monsoon</option>
-        </select>
-
-        <label for="period">Period:</label>
-        <select id="period">
-            <option value="Pre-lockdown">Pre-lockdown</option>
-            <option value="Post-lockdown">Post-lockdown</option>
-        </select>
-
-        <label for="temp">Temperature (°C):</label>
-        <input type="number" id="temp" value="30">
-
-        <label for="humidity">Humidity (%):</label>
-        <input type="number" id="humidity" value="50">
-
-        <label for="rainfall">Rainfall (mm):</label>
-        <input type="number" id="rainfall" value="0">
-
-        <label for="population">Population:</label>
-        <input type="number" id="population" value="1000000">
-
-        <button id="fetchData">Get Prediction</button>
-    </div>
-
-    <!-- Statistics Section -->
-    <div class="dashboard-stats">
-        <div class="stat-card total-consumption">
-            <div class="stat-icon">⚡</div>
-            <h3>Total Energy Consumption</h3>
-            <p class="stat-value" id="totalEnergy">-</p>
-        </div>
-        <div class="stat-card peak-demand">
-            <div class="stat-icon">📈</div>
-            <h3>Peak Demand</h3>
-            <p class="stat-value" id="peakDemand">-</p>
-        </div>
-        <div class="stat-card renewable-energy">
-            <div class="stat-icon">🌿</div>
-            <h3>Renewable Energy</h3>
-            <p class="stat-value" id="renewableEnergy">-</p>
-        </div>
+        <p>Comprehensive energy usage and trends analysis</p>
     </div>
 
     <!-- Graphs Section -->
     <div class="dashboard-graphs">
+        <!-- Row 1: Yearly and Monthly Trends -->
         <div class="graph-section">
             <div class="graph-card">
-                <h3>Total Energy Consumption Trend</h3>
+                <h3>Historical Yearly Consumption</h3>
                 <div class="graph-container">
-                    <canvas id="consumptionTrend"></canvas>
+                    <canvas id="historicalYearly"></canvas>
                 </div>
             </div>
+            <div class="graph-card">
+                <h3>Historical Monthly Consumption</h3>
+                <div class="graph-container">
+                    <canvas id="historicalMonthly"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Sector Distribution and Renewable Energy -->
+        <div class="graph-section">
             <div class="graph-card">
                 <h3>Sector-wise Energy Distribution</h3>
                 <div class="graph-container">
                     <canvas id="sectorDistribution"></canvas>
+                </div>
+            </div>
+            <div class="graph-card">
+                <h3>Renewable vs Non-Renewable Energy</h3>
+                <div class="graph-container">
+                    <canvas id="renewableEnergy"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Peak Demand and Temperature Correlation -->
+        <div class="graph-section">
+            <div class="graph-card">
+                <h3>Peak Demand Hours</h3>
+                <div class="graph-container">
+                    <canvas id="peakDemandHours"></canvas>
+                </div>
+            </div>
+            <div class="graph-card">
+                <h3>Temperature vs Energy Consumption</h3>
+                <div class="graph-container">
+                    <canvas id="tempEnergy"></canvas>
                 </div>
             </div>
         </div>
@@ -100,4 +70,3 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 {% endblock %}
-
