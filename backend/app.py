@@ -4,6 +4,7 @@ import numpy as np
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import os
+import random
 
 from ML_Models.utils.energy_forecast_utils import (
     CNN_LSTM_Model,
