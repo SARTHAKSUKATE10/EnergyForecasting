@@ -128,7 +128,7 @@ def predict():
 def get_historical_data():
     try:
         # Generate sample historical data
-        years = list(range(2015, 2025))
+        years = list(range(2018, 2025))
         total_consumption = []
         
         # Generate yearly consumption data (example: increasing trend)
@@ -136,7 +136,7 @@ def get_historical_data():
         growth_rate = 0.05  # 5% growth per year
         
         for year in years:
-            consumption = base_consumption * (1 + growth_rate) ** (year - 2015)
+            consumption = base_consumption * (1 + growth_rate) ** (year - 2018)
             total_consumption.append(float(consumption))
 
         # Generate monthly consumption data for the latest year
