@@ -80,52 +80,57 @@
     color: red;
 }
 
-.dashboard-graphs {
-    margin-bottom: var(--spacing-lg);
-    max-width: 100%;
+.graphs-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .graph-section {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-lg);
+    margin-bottom: 40px;
 }
 
-.graph-card {
-    background-color: var(--white);
-    border-radius: 15px;
-    padding: var(--spacing-lg);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeIn 0.5s ease-in-out;
+.graph-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.graph-card:hover {
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.chart-card:hover {
     transform: translateY(-5px);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-.graph-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: var(--spacing-md) auto;
-    max-width: 600px;
-}
-
-.graph-card h3 {
+.chart-card h3 {
+    color: #4CAF50;
+    margin-bottom: 15px;
     text-align: center;
-    color: var(--primary-color);
-    margin-bottom: var(--spacing-md);
 }
 
-#sectorDistribution {
-    width: 100%;
-    max-width: 400px;
+.chart-container {
+    height: 300px;
+    margin-bottom: 15px;
+}
+
+.chart-note {
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    margin-top: 10px;
 }
 
 .recent-alerts {
@@ -202,7 +207,6 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
     .dashboard-stats,
-    .graph-section,
     .alerts-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -210,8 +214,15 @@
 
 @media (max-width: 768px) {
     .dashboard-stats,
-    .graph-section,
     .alerts-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .chart-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card {
+        margin-bottom: 20px;
     }
 }
