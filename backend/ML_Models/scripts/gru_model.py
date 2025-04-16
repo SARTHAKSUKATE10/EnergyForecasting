@@ -67,7 +67,7 @@ criterion = nn.MSELoss()
 optimizer = optim.SGD(gru_model.parameters(), lr=0.01, weight_decay=1e-3)  # Switched to SGD, increased LR
 
 # --- Training Loop ---
-num_epochs = 20  # Reduced epochs
+num_epochs = 100  # Reduced epochs
 batch_size = 32
 dataset = torch.utils.data.TensorDataset(X_train_tensor, y_train_tensor)
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -86,7 +86,7 @@ for epoch in range(num_epochs):
         print(f"Epoch [{epoch}/{num_epochs}], Loss: {total_loss / len(train_loader):.4f}")
 
 # --- Save the Weaker GRU Model & Scalers ---
-MODEL_SAVE_PATH = "../models/weak_gru_model.pth"
+MODEL_SAVE_PATH = "../models/gru_model.pth"
 torch.save(gru_model.state_dict(), MODEL_SAVE_PATH)
 joblib.dump(X_scaler, "../models/X1_scaler.pkl")
 joblib.dump(y_scaler, "../models/y1_scaler.pkl")

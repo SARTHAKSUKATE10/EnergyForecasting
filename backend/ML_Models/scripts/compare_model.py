@@ -1,116 +1,134 @@
-import os
-import sys
-import numpy as np
-import pandas as pd
 import torch
+import torch.nn as nn
 import joblib
-import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
-from train_model import CNN_LSTM_Model  # Your CNN-LSTM model class
+import numpy as np
+from sklearn.metrics import mean_squared_error, r2_score
+import pandas as pd
 
-# Define a Vanilla GRU model for comparison
-class VanillaGRUModel(torch.nn.Module):
-    def __init__(self, input_dim, hidden_dim=64, num_layers=1):
-        super(VanillaGRUModel, self).__init__()
-        self.gru = torch.nn.GRU(input_size=input_dim, hidden_size=hidden_dim,
-                                num_layers=num_layers, batch_first=True)
-        self.dropout = torch.nn.Dropout(0.5)
-        self.fc = torch.nn.Linear(hidden_dim, 1)
-        
-    def forward(self, x):
-        gru_out, _ = self.gru(x)
-        out = self.dropout(gru_out[:, -1, :])
-        out = self.fc(out)
-        return out
-
-# ------------------ Setup Paths ------------------
-PROJECT_ROOT = r"C:\Users\jrsar\OneDrive\Desktop\FinalYearProject"
-FEATURES_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "data", "features.csv")
-TARGET_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "data", "target.csv")
-
-# Scaler paths
-X_SCALER_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "X_scaler.pkl")
-Y_SCALER_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "y_scaler.pkl")
-
-# Model paths
-CNN_LSTM_MODEL_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "cnn_lstm_model.pth")
-GRU_MODEL_PATH = os.path.join(PROJECT_ROOT, "backend", "ML_Models", "models", "vanilla_gru_model.pth")
-
-# ------------------ Data Loading ------------------
-features_df = pd.read_csv(FEATURES_PATH)
-target_df = pd.read_csv(TARGET_PATH)
+# --- Load Data ---
+features_df = pd.read_csv("../data/features.csv")
+target_df = pd.read_csv("../data/target.csv")
 
 if "Date" in features_df.columns:
-    features_df.drop(columns=["Date"], inplace=True)
+    features_df = features_df.drop(columns=["Date"])
 
 X = features_df.values.astype(np.float32)
 y = target_df.values.astype(np.float32).reshape(-1, 1)
 
-# ------------------ Split Data ------------------
-_, X_test, _, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
+# --- Load Scalers ---
+X_scaler = joblib.load("../models/X_scaler.pkl")  
+y_scaler = joblib.load("../models/y_scaler.pkl")
 
-# ------------------ Load Scalers ------------------
-X_scaler = joblib.load(X_SCALER_PATH)
-y_scaler = joblib.load(Y_SCALER_PATH)
+# --- Scale Data ---
+X_scaled = X_scaler.transform(X)
+y_scaled = y_scaler.transform(y)
 
-# Transform Test Data
-X_test_scaled = X_scaler.transform(X_test)
-y_test_scaled = y_scaler.transform(y_test)
+# --- Split Data (Same as in training) ---
+split_index = int(len(X) * 0.8)
+X_test_scaled = X_scaled[split_index:]
+y_test_scaled = y_scaled[split_index:]
+
+# Reshape for models
 X_test_scaled = X_test_scaled.reshape(X_test_scaled.shape[0], 1, X_test_scaled.shape[1])
 
-# Convert to torch tensors
-X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32)
-
+# Convert to PyTorch tensor
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-X_test_tensor = X_test_tensor.to(device)
+X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
+y_test_tensor = torch.tensor(y_test_scaled, dtype=torch.float32).to(device)
 
-# ------------------ Load Models ------------------
+# --- Define Models (Matching Saved Versions) ---
+class LSTM_Model(nn.Module):
+    def __init__(self, input_dim):
+        super(LSTM_Model, self).__init__()
+        self.lstm = nn.LSTM(input_size=input_dim, hidden_size=32, num_layers=2, batch_first=True)  # Matched previous model
+        self.dropout = nn.Dropout(0.3)
+        self.fc = nn.Linear(32, 1)
+
+    def forward(self, x):
+        x, _ = self.lstm(x)
+        x = self.dropout(x[:, -1, :])
+        return self.fc(x)
+
+class CNN_LSTM_Model(nn.Module):
+    def __init__(self, input_dim):
+        super(CNN_LSTM_Model, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=64, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=64, out_channels=32, kernel_size=3, padding=1)
+        self.lstm = nn.LSTM(input_size=32, hidden_size=64, num_layers=1, batch_first=True)
+        self.dropout = nn.Dropout(0.3)
+        self.fc1 = nn.Linear(64, 32)
+        self.fc2 = nn.Linear(32, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = x.permute(0, 2, 1)  # Swap dimensions for LSTM
+        x, _ = self.lstm(x)
+        x = self.dropout(x[:, -1, :])
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+class GRU_Model(nn.Module):
+    def __init__(self, input_dim):
+        super(GRU_Model, self).__init__()
+        self.gru = nn.GRU(input_size=input_dim, hidden_size=32, num_layers=1, batch_first=True)  # Matched previous GRU
+        self.dropout = nn.Dropout(0.5)
+        self.fc = nn.Linear(32, 1)
+
+    def forward(self, x):
+        gru_out, _ = self.gru(x)
+        out = self.dropout(gru_out[:, -1, :])
+        return self.fc(out)
+
+# --- Load Models ---
 input_dim = X.shape[1]
 
+lstm_model = LSTM_Model(input_dim).to(device)
+lstm_model.load_state_dict(torch.load("../models/lstm_model.pth"))
+lstm_model.eval()
+
 cnn_lstm_model = CNN_LSTM_Model(input_dim).to(device)
-cnn_lstm_model.load_state_dict(torch.load(CNN_LSTM_MODEL_PATH, map_location=device))
+cnn_lstm_model.load_state_dict(torch.load("../models/cnn_lstm_model.pth"))
 cnn_lstm_model.eval()
 
-gru_model = VanillaGRUModel(input_dim).to(device)
-gru_model.load_state_dict(torch.load(GRU_MODEL_PATH, map_location=device))
+gru_model = GRU_Model(input_dim).to(device)
+gru_model.load_state_dict(torch.load("../models/gru_model.pth"))
 gru_model.eval()
 
-# ------------------ Make Predictions ------------------
-with torch.no_grad():
-    cnn_lstm_pred_scaled = cnn_lstm_model(X_test_tensor).cpu().numpy()
-    gru_pred_scaled = gru_model(X_test_tensor).cpu().numpy()
+# --- Evaluation Function ---
+def evaluate_model(model, X_test, y_test, y_scaler, model_name):
+    with torch.no_grad():
+        y_pred_scaled = model(X_test).cpu().numpy()
+        y_test_scaled = y_test.cpu().numpy()
 
-# Inverse transform predictions
-cnn_lstm_pred = y_scaler.inverse_transform(cnn_lstm_pred_scaled)
-gru_pred = y_scaler.inverse_transform(gru_pred_scaled)
+    # Inverse transform to get original scale
+    y_pred = y_scaler.inverse_transform(y_pred_scaled)
+    y_true = y_scaler.inverse_transform(y_test_scaled)
 
-# ------------------ Evaluate Performance ------------------
-mae_cnn_lstm = mean_absolute_error(y_test, cnn_lstm_pred)
-mse_cnn_lstm = mean_squared_error(y_test, cnn_lstm_pred)
-rmse_cnn_lstm = np.sqrt(mse_cnn_lstm)
-r2_cnn_lstm = r2_score(y_test, cnn_lstm_pred)
+    # Calculate Metrics
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_true, y_pred)
 
-mae_gru = mean_absolute_error(y_test, gru_pred)
-mse_gru = mean_squared_error(y_test, gru_pred)
-rmse_gru = np.sqrt(mse_gru)
-r2_gru = r2_score(y_test, gru_pred)
+    print(f"\n📊 {model_name} Performance:")
+    print(f"🔹 MSE  : {mse:.4f}")
+    print(f"🔹 RMSE : {rmse:.4f}")
+    print(f"🔹 R² Score: {r2:.4f}")
 
-print("CNN-LSTM Model Performance:")
-print(f"  MAE: {mae_cnn_lstm:.4f}, RMSE: {rmse_cnn_lstm:.4f}, R²: {r2_cnn_lstm:.4f}")
-print("\nVanilla GRU Model Performance:")
-print(f"  MAE: {mae_gru:.4f}, RMSE: {rmse_gru:.4f}, R²: {r2_gru:.4f}")
+    return mse, rmse, r2
 
-# ------------------ Plot Predictions ------------------
-x = np.arange(len(y_test))
-plt.figure(figsize=(12, 6))
-plt.plot(x, y_test.ravel(), label="Actual", marker="o", color="blue")
-plt.plot(x, cnn_lstm_pred.ravel(), label="CNN-LSTM Predictions", marker="o", linestyle="--", color="red")
-plt.plot(x, gru_pred.ravel(), label="GRU Predictions", marker="o", linestyle="--", color="green")
-plt.xlabel("Sample Index")
-plt.ylabel("Energy Usage (kWh)")
-plt.title("Actual vs. Predicted Energy Usage (Test Data)")
-plt.legend()
-plt.grid(True)
-plt.show()
+# --- Compare Models ---
+lstm_results = evaluate_model(lstm_model, X_test_tensor, y_test_tensor, y_scaler, "LSTM Model")
+cnn_lstm_results = evaluate_model(cnn_lstm_model, X_test_tensor, y_test_tensor, y_scaler, "CNN-LSTM Model")
+gru_results = evaluate_model(gru_model, X_test_tensor, y_test_tensor, y_scaler, "GRU Model")
+
+# --- Tabular Comparison ---
+results_df = pd.DataFrame({
+    "Model": ["LSTM", "CNN-LSTM", "GRU"],
+    "MSE": [lstm_results[0], cnn_lstm_results[0], gru_results[0]],
+    "RMSE": [lstm_results[1], cnn_lstm_results[1], gru_results[1]],
+    "R² Score": [lstm_results[2], cnn_lstm_results[2], gru_results[2]]
+})
+
+print("\n📌 Model Comparison:\n")
+print(results_df)
