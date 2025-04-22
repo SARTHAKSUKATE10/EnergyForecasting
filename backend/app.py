@@ -72,16 +72,7 @@ def dashboard():
 def predict():
     try:
         data = request.get_json()
-        # Expected input example:
-        # {
-        #   "features": [20250302, 1],
-        #   "season": "Summer",
-        #   "period": "Post-lockdown",
-        #   "temp": 34.0,
-        #   "rainfall": 5.0,
-        #   "humidity": 69.0,
-        #   "population": 4000000
-        # }
+
         basic_features = np.array(data["features"], dtype=np.float32)
         season = data.get("season", "Summer")
         period = data.get("period", "Pre-lockdown")
@@ -90,37 +81,45 @@ def predict():
         humidity = float(data.get("humidity", 50.0))
         population = float(data.get("population", 1000000))
 
-        full_features = create_full_feature_vector(basic_features, temp, rainfall, humidity, population)
+        # Create full 30-dim feature vector
+        full_features = create_full_feature_vector(
+            basic_features, temp, rainfall, humidity, population
+        )
         full_features = np.array(full_features, dtype=np.float32).reshape(1, -1)
 
-        # Scale features with X_scaler
-        X_scaled = X_scaler.transform(full_features)
-        X_scaled = X_scaled.reshape(1, 1, -1)
+        # Check that the feature vector is exactly 30
+        if full_features.shape[1] != 30:
+            return jsonify({"error": f"Expected 30 input features, got {full_features.shape[1]}"}), 400
 
-        # Predict in scaled target space
+        # Scale input
+        X_scaled = X_scaler.transform(full_features)  # shape: (1, 30)
+        X_scaled = X_scaled.reshape(1, 1, 30)         # CNN expects: (batch_size=1, channels=1, sequence_length=30)
+
+        # Predict
         with torch.no_grad():
-            y_pred_scaled = model(torch.tensor(X_scaled, dtype=torch.float32).to(device)).cpu().numpy().flatten()[0]
+            X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(device)
+            y_pred_scaled = model(X_tensor).cpu().numpy().flatten()[0]
 
-        # Inverse transform with y_scaler to get prediction in original scale
-        y_pred_original = y_scaler.inverse_transform(np.array([[y_pred_scaled]]))[0][0]
+        # Inverse scale output
+        y_pred_original = y_scaler.inverse_transform([[y_pred_scaled]])[0][0]
 
-        # Compute full distribution using environmental adjustments
+        # Compute distribution
         distribution = compute_energy_distribution(
             total_energy=y_pred_original,
             season=season,
             period=period,
-            festival_effect=1.0,  # Adjust if needed
+            festival_effect=1.0,  # if using festival label, you can update this
             temp=temp,
             rainfall=rainfall,
             humidity=humidity,
             population=population
         )
 
-        updated_distribution = convert_to_builtin_type(distribution)
-        return jsonify(updated_distribution)
+        return jsonify(convert_to_builtin_type(distribution))
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
 
 ####################################
 # Historical Data Endpoint
@@ -174,17 +173,17 @@ def get_historical_data():
 
         # Generate peak demand hours data
         peak_demand = {
-            "values": [2000, 2200, 3500, 4500, 4000, 3000]  # Example peak demand values
+            "values": [4000, 4200, 5500, 6500, 5000, 4000]  # Example peak demand values
         }
 
         # Generate temperature vs energy consumption data
         temp_energy = [
-            {"temp": 15, "energy": 2500},
-            {"temp": 20, "energy": 2800},
-            {"temp": 25, "energy": 3200},
-            {"temp": 30, "energy": 3800},
-            {"temp": 35, "energy": 4500},
-            {"temp": 40, "energy": 5200}
+            {"temp": 15, "energy": 3500},
+            {"temp": 20, "energy": 3800},
+            {"temp": 25, "energy": 4200},
+            {"temp": 30, "energy": 4800},
+            {"temp": 35, "energy": 5500},
+            {"temp": 40, "energy": 6200}
         ]
 
         response = {

@@ -115,20 +115,17 @@ def compute_energy_distribution(total_energy, season, period, festival_effect=1.
 # create_full_feature_vector
 ####################################
 def create_full_feature_vector(basic_features, temp, rainfall, humidity, population):
-    """
-    Expand [dateInt, festival] -> 30-dim vector.
-    """
     full_vector = [0]*30
-    full_vector[0] = basic_features[0]
-    full_vector[1] = basic_features[1]
-    full_vector[2] = 1.0
-    full_vector[3] = 1.0
+    full_vector[0] = basic_features[0]  # Date integer
+    full_vector[1] = basic_features[1]  # Festival flag
+    full_vector[2] = 1.0  # Placeholder
+    full_vector[3] = 1.0  # Placeholder
     full_vector[4] = temp
     full_vector[5] = rainfall
     full_vector[6] = humidity
     full_vector[7] = population
     for i in range(8, 30):
-        full_vector[i] = 1.0
+        full_vector[i] = 1.0  # Padding
     return full_vector
 
 ####################################
