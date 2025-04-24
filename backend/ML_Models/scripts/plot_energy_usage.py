@@ -1,70 +1,69 @@
-import os
+import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import logging
-from datetime import datetime
+import joblib
+import os
 
-# ------------------------------------------------------------------
-# 1. Setup Logging
-# ------------------------------------------------------------------
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+from sklearn.model_selection import train_test_split  # ✅ Add this
+from train_model import CNN_LSTM_Model
+from lstm_model import LSTM_Model
+from gru_model import WeakGRUModel
 
-# ------------------------------------------------------------------
-# 2. Load Dataset
-# ------------------------------------------------------------------
-DATASET_PATH = r"C:\Users\jrsar\OneDrive\Desktop\FinalYearProject\backend\ML_Models\data\sectorwise_energy_updated.csv"
+# --- Check Device ---
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"✅ Using device: {device}")
 
+# --- Load Dataset ---
+features_df = pd.read_csv("../data/features.csv")
+target_df = pd.read_csv("../data/target.csv")
 
-if not os.path.exists(DATASET_PATH):
-    logging.error(f"Dataset not found: {DATASET_PATH}")
-    exit(1)
+if "Date" in features_df.columns:
+    features_df.drop(columns=["Date"], inplace=True)
 
-df = pd.read_csv(DATASET_PATH)
-df["Date"] = pd.to_datetime(df["Date"], dayfirst=True)
-df["year"] = df["Date"].dt.year
-df["month"] = df["Date"].dt.month
+X = features_df.values.astype(np.float32)
+y = target_df.values.astype(np.float32).reshape(-1, 1)
 
-# Select the energy usage column
-energy_col = "Total Usage (kWh)"  
+# --- Split Test Set ---
+_, X_test, _, y_test = train_test_split(X, y, test_size=0.2, shuffle=False, random_state=42)
 
-# Compute monthly average usage across all years
-monthly_avg = df.groupby(["year", "month"])[energy_col].mean().reset_index()
+# --- Helper function to load and predict ---
+def predict_with_model(model_class, model_path, x_scaler_path, y_scaler_path, input_shape, name):
+    # Load scalers
+    X_scaler = joblib.load(x_scaler_path)
+    y_scaler = joblib.load(y_scaler_path)
 
-# Pivot to get yearly trends for each month
-pivot_table = monthly_avg.pivot(index="month", columns="year", values=energy_col)
+    X_test_scaled = X_scaler.transform(X_test).reshape(X_test.shape[0], 1, input_shape)
+    X_test_tensor = torch.tensor(X_test_scaled, dtype=torch.float32).to(device)
 
-# ------------------------------------------------------------------
-# 3. Forecast Future Energy Usage (Oct 2024 - Dec 2025)
-# ------------------------------------------------------------------
-# Compute average monthly energy usage from previous years
-monthly_trend = pivot_table.mean(axis=1)  # Average across all past years
+    # Load model
+    model = model_class(input_shape).to(device)
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    model.eval()
 
-# Generate future months
-future_months = list(range(10, 13)) + list(range(1, 13))  # Oct-Dec 2024 + Jan-Dec 2025
-future_years = [2024] * 3 + [2025] * 12
+    with torch.no_grad():
+        y_pred_scaled = model(X_test_tensor).cpu().numpy()
 
-# Predict energy usage using historical trends
-predicted_usage = [monthly_trend[m] for m in future_months]
+    y_pred = y_scaler.inverse_transform(y_pred_scaled)
+    return y_pred.flatten()
 
-# ------------------------------------------------------------------
-# 4. Plot Historical vs. Predicted Data
-# ------------------------------------------------------------------
-plt.figure(figsize=(12, 6))
+# --- Predict for all models ---
+input_dim = X.shape[1]
 
-# Plot historical data
-for yr in pivot_table.columns:
-    plt.plot(pivot_table.index, pivot_table[yr], marker='o', linestyle='-', label=f"Historical {yr}")
+y_pred_cnn_lstm = predict_with_model(CNN_LSTM_Model, "../models/cnn_lstm_model.pth", "../models/X_scaler.pkl", "../models/y_scaler.pkl", input_dim, "CNN-LSTM")
+y_pred_lstm      = predict_with_model(LSTM_Model, "../models/lstm_model.pth", "../models/X2_scaler.pkl", "../models/y2_scaler.pkl", input_dim, "LSTM")
+y_pred_gru       = predict_with_model(WeakGRUModel, "../models/gru_model.pth", "../models/X1_scaler.pkl", "../models/y1_scaler.pkl", input_dim, "GRU")
 
-# Plot predictions
-plt.plot(future_months, predicted_usage, marker='o', linestyle='--', color='red', linewidth=2, label="Predicted 2024-2025")
-
-plt.xlabel("Month")
-plt.ylabel("Average Energy Usage (kWh)")
-plt.title("Historical vs. Predicted Energy Usage (Oct 2024 - Dec 2025)")
-plt.xticks(future_months, ["Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])
-plt.grid(True)
+# --- Plot ---
+plt.figure(figsize=(14, 6))
+plt.plot(y_test, label="Actual", color="black", linewidth=2)
+plt.plot(y_pred_cnn_lstm, label="CNN-LSTM", linestyle="--", color="red")
+plt.plot(y_pred_lstm, label="LSTM", linestyle="--", color="green")
+plt.plot(y_pred_gru, label="GRU", linestyle="--", color="blue")
+plt.title("Energy Usage Prediction - Model Comparison")
+plt.xlabel("Sample Index")
+plt.ylabel("Energy Usage (kWh)")
 plt.legend()
+plt.grid(True)
+plt.tight_layout()
 plt.show()
-
-logging.info("✅ Prediction completed using historical trends.")
