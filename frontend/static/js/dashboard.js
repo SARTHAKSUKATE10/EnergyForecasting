@@ -74,9 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
             yearlyBarChart.data.datasets[0].data = [totalEnergy];
             yearlyBarChart.update();
 
-            // 🚫 No yearly line chart
-            // 🚫 No yearly pie chart
-
         } catch (error) {
             hideSpinner();
             console.error('Error fetching prediction data:', error);
@@ -84,7 +81,99 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function fetchPreviousData() {
-        // (Keep your fetchPreviousData same — no changes needed for old analysis charts)
+        try {
+            showSpinner();
+            const response = await fetch('/previous_data_analysis');
+            const data = await response.json();
+            hideSpinner();
+
+            if (data.error) {
+                console.error('Error in previous data:', data.error);
+                return;
+            }
+
+            // Yearly Usage Chart
+            const years = Object.keys(data.yearly_usage);
+            const yearlyUsage = Object.values(data.yearly_usage);
+            yearlyUsageChart = new Chart(document.getElementById("yearlyUsageChart").getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: years,
+                    datasets: [{ label: "Yearly Usage (kWh)", data: yearlyUsage, backgroundColor: "#42a5f5" }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Monthly Usage Chart
+            const months = Object.keys(data.monthly_usage);
+            const monthlyUsage = Object.values(data.monthly_usage);
+            monthlyUsageChart = new Chart(document.getElementById("monthlyUsageChart").getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: months,
+                    datasets: [{ label: "Monthly Usage (kWh)", data: monthlyUsage, backgroundColor: "#66bb6a" }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Urban vs Rural Usage Chart
+            urbanRuralChart = new Chart(document.getElementById("urbanRuralChart").getContext("2d"), {
+                type: "pie",
+                data: {
+                    labels: ["Urban", "Rural"],
+                    datasets: [{
+                        data: [data.sector_usage["Urban Usage (kWh)"], data.sector_usage["Rural Usage (kWh)"]],
+                        backgroundColor: ["#ff7043", "#29b6f6"]
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // Urban Sector Usage Chart
+            urbanSectorChart = new Chart(document.getElementById("urbanSectorChart").getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: Object.keys(data.urban_sectors),
+                    datasets: [{
+                        label: "Urban Sector Usage (kWh)",
+                        data: Object.values(data.urban_sectors),
+                        backgroundColor: "#ab47bc"
+                    }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Rural Sector Usage Chart
+            ruralSectorChart = new Chart(document.getElementById("ruralSectorChart").getContext("2d"), {
+                type: "bar",
+                data: {
+                    labels: Object.keys(data.rural_sectors),
+                    datasets: [{
+                        label: "Rural Sector Usage (kWh)",
+                        data: Object.values(data.rural_sectors),
+                        backgroundColor: "#26c6da"
+                    }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Season Usage Chart
+            seasonUsageChart = new Chart(document.getElementById("seasonUsageChart").getContext("2d"), {
+                type: "pie",
+                data: {
+                    labels: Object.keys(data.season_usage),
+                    datasets: [{
+                        data: Object.values(data.season_usage),
+                        backgroundColor: ["#ff8a65", "#81c784", "#64b5f6", "#ffd54f"]
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+        } catch (error) {
+            hideSpinner();
+            console.error('Error fetching previous data:', error);
+        }
     }
 
     // Tab switch etc.
