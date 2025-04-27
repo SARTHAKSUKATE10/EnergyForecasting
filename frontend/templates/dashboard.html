@@ -3,84 +3,174 @@
 {% block title %}Energy Consumption Dashboard{% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+<style>
+  /* Loading Spinner */
+  .spinner {
+    display: none;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(0, 0, 0, 0.1);
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .tab-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 5px;
+  }
+
+  .tab-button.active {
+    background-color: #0056b3;
+  }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
-    <div class="dashboard-header">
-        <h1>Energy Consumption Dashboard</h1>
-        <p>Comprehensive energy usage and trends analysis</p>
+  <div class="dashboard-header">
+    <h1>Energy Consumption Dashboard</h1>
+    <p>Live prediction of monthly energy usage using AI models</p>
+
+    <!-- Tab Switch Buttons -->
+    <div style="text-align: center; margin-bottom: 20px;">
+      <button id="predictionTab" class="tab-button active">Prediction</button>
+      <button id="analysisTab" class="tab-button">Previous Analysis</button>
     </div>
 
-    <!-- Graphs Section -->
-    <div class="graphs-container">
-        <!-- Yearly Consumption Charts -->
-        <div class="graph-section">
-            <h2>Yearly Energy Consumption</h2>
-            <div class="chart-grid">
-                <!-- Bar Chart -->
-                <div class="chart-card">
-                    <h3>Bar Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="yearlyBarChart"></canvas>
-                    </div>
-                    <p class="chart-note">Shows yearly consumption with clear comparisons</p>
-                </div>
-
-                <!-- Line Chart -->
-                <div class="chart-card">
-                    <h3>Line Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="yearlyLineChart"></canvas>
-                    </div>
-                    <p class="chart-note">Highlights trend over years</p>
-                </div>
-
-                <!-- Pie Chart -->
-                <div class="chart-card">
-                    <h3>Pie Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="yearlyPieChart"></canvas>
-                    </div>
-                    <p class="chart-note">Shows proportion of yearly consumption</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Monthly Consumption Charts -->
-        <div class="graph-section">
-            <h2>Monthly Energy Consumption</h2>
-            <div class="chart-grid">
-                <!-- Bar Chart -->
-                <div class="chart-card">
-                    <h3>Bar Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="monthlyBarChart"></canvas>
-                    </div>
-                    <p class="chart-note">Compares monthly consumption</p>
-                </div>
-
-                <!-- Line Chart -->
-                <div class="chart-card">
-                    <h3>Line Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="monthlyLineChart"></canvas>
-                    </div>
-                    <p class="chart-note">Shows seasonal patterns</p>
-                </div>
-
-                <!-- Pie Chart -->
-                <div class="chart-card">
-                    <h3>Pie Chart</h3>
-                    <div class="chart-container">
-                        <canvas id="monthlyPieChart"></canvas>
-                    </div>
-                    <p class="chart-note">Displays monthly distribution</p>
-                </div>
-            </div>
-        </div>
+    <!-- Year selection -->
+    <div class="year-selector" style="margin-top: 1rem;">
+      <label for="yearSelect">Select Prediction Year:</label>
+      <select id="yearSelect">
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+      </select>
     </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="spinner" id="spinner"></div>
+
+  <!-- Graphs Container -->
+  <div class="graphs-container">
+    
+    <!-- Prediction Section -->
+    <div id="predictionSection">
+      <div class="graph-section">
+        <h2>Predicted Monthly Energy Consumption</h2>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Monthly Bar Chart</h3>
+            <div class="chart-container">
+              <canvas id="monthlyBarChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Monthly Line Chart</h3>
+            <div class="chart-container">
+              <canvas id="monthlyLineChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Monthly Pie Chart</h3>
+            <div class="chart-container">
+              <canvas id="monthlyPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="graph-section">
+        <h2>Predicted Total Yearly Energy Consumption</h2>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Yearly Bar Chart</h3>
+            <div class="chart-container">
+              <canvas id="yearlyBarChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Yearly Line Chart</h3>
+            <div class="chart-container">
+              <canvas id="yearlyLineChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Yearly Pie Chart</h3>
+            <div class="chart-container">
+              <canvas id="yearlyPieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Previous Data Analysis Section -->
+    <div id="analysisSection" style="display: none;">
+      <div class="graph-section">
+        <h2>Previous Data Analysis</h2>
+        <div class="chart-grid">
+          <div class="chart-card">
+            <h3>Yearly Usage</h3>
+            <div class="chart-container">
+              <canvas id="yearlyUsageChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Monthly Usage</h3>
+            <div class="chart-container">
+              <canvas id="monthlyUsageChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Urban vs Rural Usage</h3>
+            <div class="chart-container">
+              <canvas id="urbanRuralChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Urban Sector Usage</h3>
+            <div class="chart-container">
+              <canvas id="urbanSectorChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Rural Sector Usage</h3>
+            <div class="chart-container">
+              <canvas id="ruralSectorChart"></canvas>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Seasonal Usage</h3>
+            <div class="chart-container">
+              <canvas id="seasonUsageChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 {% endblock %}
 

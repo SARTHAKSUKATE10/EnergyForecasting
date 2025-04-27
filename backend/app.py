@@ -1,5 +1,7 @@
 import torch
 import joblib
+import json
+import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
@@ -124,83 +126,107 @@ def predict():
 ####################################
 # Historical Data Endpoint
 ####################################
-@app.route("/get_historical_data")
-def get_historical_data():
+  
+@app.route("/predict_monthly_energy", methods=["GET"])
+def predict_monthly_energy():
     try:
-        # Generate sample historical data
-        years = list(range(2018, 2025))
-        total_consumption = []
         
-        # Generate yearly consumption data (example: increasing trend)
-        base_consumption = 1000.0  # Base consumption in MW
-        growth_rate = 0.05  # 5% growth per year
-        
-        for year in years:
-            consumption = base_consumption * (1 + growth_rate) ** (year - 2018)
-            total_consumption.append(float(consumption))
+        year = int(request.args.get("year", 2026))
 
-        # Generate monthly consumption data for the latest year
-        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        latest_year_consumption = total_consumption[-1]
-        monthly_consumption = []
-        
-        # Generate monthly data with seasonal variations
-        for month in range(12):
-            # Example seasonal variation: higher in summer, lower in winter
-            if month in [5, 6, 7]:  # Summer months
-                multiplier = 1.2
-            elif month in [11, 0, 1]:  # Winter months
-                multiplier = 0.8
-            else:
-                multiplier = 1.0
-            
-            monthly_consumption.append(float(latest_year_consumption * multiplier / 12))
+        # Load monthly features JSON
+        json_path = os.path.join(BASE_DIR, "ML_Models", "data", "monthly_features.json")
+        with open(json_path, "r") as f:
+            all_months_info = json.load(f)
 
-        # Generate sector distribution data
-        sector_distribution = {
-            "household": latest_year_consumption * 0.30,
-            "industrial": latest_year_consumption * 0.40,
-            "commercial": latest_year_consumption * 0.20,
-            "others": latest_year_consumption * 0.10
-        }
+        # Filter data for the selected year
+        months_info = [m for m in all_months_info if m["year"] == year]
 
-        # Generate renewable vs non-renewable data
-        renewable_data = {
-            "years": [str(y) for y in years],
-            "renewable": [float(consumption * 0.30) for consumption in total_consumption],
-            "non_renewable": [float(consumption * 0.70) for consumption in total_consumption]
-        }
+        monthly_predictions = []
+        for idx, info in enumerate(months_info):
+            # Basic features
+            basic_features = np.array([idx + 1, info["festival_flag"]], dtype=np.float32)
 
-        # Generate peak demand hours data
-        peak_demand = {
-            "values": [4000, 4200, 5500, 6500, 5000, 4000]  # Example peak demand values
-        }
+            temp = info["temp"]
+            rainfall = info["rainfall"]
+            humidity = info["humidity"]
+            population = 1000000  # Modify if you want dynamic population
 
-        # Generate temperature vs energy consumption data
-        temp_energy = [
-            {"temp": 15, "energy": 3500},
-            {"temp": 20, "energy": 3800},
-            {"temp": 25, "energy": 4200},
-            {"temp": 30, "energy": 4800},
-            {"temp": 35, "energy": 5500},
-            {"temp": 40, "energy": 6200}
-        ]
+            full_features = create_full_feature_vector(basic_features, temp, rainfall, humidity, population)
+            full_features = np.array(full_features, dtype=np.float32).reshape(1, -1)
 
-        response = {
-            "years": [str(y) for y in years],
-            "total_consumption": total_consumption,
-            "months": months,
-            "monthly_consumption": monthly_consumption,
-            "sector_distribution": sector_distribution,
-            "renewable_data": renewable_data,
-            "peak_demand": peak_demand,
-            "temp_energy": temp_energy
-        }
+            X_scaled = X_scaler.transform(full_features)
+            X_scaled = X_scaled.reshape(1, 1, 30)
 
-        return jsonify(response)
+            with torch.no_grad():
+                X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(device)
+                y_pred_scaled = model(X_tensor).cpu().numpy().flatten()[0]
+
+            y_pred_original = y_scaler.inverse_transform([[y_pred_scaled]])[0][0]
+
+            monthly_predictions.append({
+                "year": year,
+                "month": info["month"],
+                "predicted_energy": y_pred_original
+            })
+
+        return jsonify(monthly_predictions)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
+
+
+@app.route('/previous_data_analysis', methods=['GET'])
+def previous_data_analysis():
+    try:
+        # Load the dataset
+        df = pd.read_csv(r'C:\Users\jrsar\OneDrive\Desktop\FinalYearProject\backend\ML_Models\data\processed_data.csv')
+
+        df['Date'] = pd.to_datetime(df['Date'])
+
+        # Group by Year
+        yearly_usage = df.groupby('Year')['Total Usage (kWh)'].sum().to_dict()
+
+        # Group by Month
+        monthly_usage = df.groupby('Month')['Total Usage (kWh)'].sum().to_dict()
+
+        # Sectorwise (Urban & Rural)
+        sector_usage = {
+            "Urban Usage (kWh)": df['Urban Usage (kWh)'].sum(),
+            "Rural Usage (kWh)": df['Rural Usage (kWh)'].sum()
+        }
+
+        # Urban Sectors
+        urban_sectors = {
+            "Urban Household": df['Urban Household (kWh)'].sum(),
+            "Urban Industrial": df['Urban Industrial (kWh)'].sum(),
+            "Urban Commercial": df['Urban Commercial (kWh)'].sum(),
+            "Urban Others": df['Urban Others (kWh)'].sum()
+        }
+
+        # Rural Sectors
+        rural_sectors = {
+            "Rural Household": df['Rural Household (kWh)'].sum(),
+            "Rural Industrial": df['Rural Industrial (kWh)'].sum(),
+            "Rural Commercial": df['Rural Commercial (kWh)'].sum(),
+            "Rural Others": df['Rural Others (kWh)'].sum()
+        }
+
+        # Group by Season
+        season_usage = df.groupby('Season')['Total Usage (kWh)'].sum().to_dict()
+
+        return jsonify({
+            "yearly_usage": yearly_usage,
+            "monthly_usage": monthly_usage,
+            "sector_usage": sector_usage,
+            "urban_sectors": urban_sectors,
+            "rural_sectors": rural_sectors,
+            "season_usage": season_usage
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 ####################################
 # Additional Feature: Logging Requests

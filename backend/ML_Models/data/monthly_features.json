@@ -1,0 +1,24 @@
+[
+    {"year": 2025, "month": "May", "temp": 40, "rainfall": 20, "humidity": 30, "festival_flag": 0},
+    {"year": 2025, "month": "Jun", "temp": 35, "rainfall": 200, "humidity": 75, "festival_flag": 1},
+    {"year": 2025, "month": "Jul", "temp": 30, "rainfall": 350, "humidity": 90, "festival_flag": 0},
+    {"year": 2025, "month": "Aug", "temp": 29, "rainfall": 300, "humidity": 85, "festival_flag": 0},
+    {"year": 2025, "month": "Sep", "temp": 31, "rainfall": 150, "humidity": 70, "festival_flag": 0},
+    {"year": 2025, "month": "Oct", "temp": 28, "rainfall": 50, "humidity": 60, "festival_flag": 1},
+    {"year": 2025, "month": "Nov", "temp": 25, "rainfall": 10, "humidity": 40, "festival_flag": 0},
+    {"year": 2025, "month": "Dec", "temp": 20, "rainfall": 5, "humidity": 35, "festival_flag": 1},
+  
+    {"year": 2026, "month": "Jan", "temp": 18, "rainfall": 5, "humidity": 30, "festival_flag": 0},
+    {"year": 2026, "month": "Feb", "temp": 22, "rainfall": 8, "humidity": 40, "festival_flag": 0},
+    {"year": 2026, "month": "Mar", "temp": 30, "rainfall": 20, "humidity": 35, "festival_flag": 0},
+    {"year": 2026, "month": "Apr", "temp": 38, "rainfall": 10, "humidity": 25, "festival_flag": 1},
+    {"year": 2026, "month": "May", "temp": 42, "rainfall": 15, "humidity": 20, "festival_flag": 0},
+    {"year": 2026, "month": "Jun", "temp": 36, "rainfall": 250, "humidity": 80, "festival_flag": 1},
+    {"year": 2026, "month": "Jul", "temp": 31, "rainfall": 400, "humidity": 95, "festival_flag": 0},
+    {"year": 2026, "month": "Aug", "temp": 30, "rainfall": 380, "humidity": 90, "festival_flag": 0},
+    {"year": 2026, "month": "Sep", "temp": 32, "rainfall": 200, "humidity": 75, "festival_flag": 0},
+    {"year": 2026, "month": "Oct", "temp": 29, "rainfall": 40, "humidity": 55, "festival_flag": 1},
+    {"year": 2026, "month": "Nov", "temp": 24, "rainfall": 15, "humidity": 45, "festival_flag": 0},
+    {"year": 2026, "month": "Dec", "temp": 19, "rainfall": 5, "humidity": 30, "festival_flag": 1}
+  ]
+  
