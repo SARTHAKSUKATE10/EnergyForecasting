@@ -47,10 +47,10 @@ def compute_energy_distribution(total_energy, season, period, festival_effect=1.
     base_rural_ratio = 0.3941
 
     urban_sector_ratios = {
-        "Urban Household": 0.2836,
-        "Urban Industrial": 0.3781,
-        "Urban Commercial": 0.1890,
-        "Urban Others": 0.0945,
+        "Urban Household": 0.3,
+        "Urban Industrial": 0.39,
+        "Urban Commercial": 0.21,
+        "Urban Others": 0.1,
     }
     rural_sector_ratios = {
         "Rural Household": 0.4726,
@@ -61,15 +61,16 @@ def compute_energy_distribution(total_energy, season, period, festival_effect=1.
 
     # Multipliers
     season_multipliers = {
-        "Winter": 1.05,
-        "Summer": 1.10,
-        "Monsoon": 0.95,
-        "Autumn": 1.00,
+        "Winter": 0.895,
+        "Summer": 1.209,
+        "Monsoon": 0.862,
+        "Autumn": 1.147,
+        "Post-Monsoon":0.738
     }
     period_multipliers = {
-        "Pre-lockdown": 1.00,
-        "Lockdown": 0.85,
-        "Post-lockdown": 1.05,
+        "Pre-lockdown": 0.72,
+        "Lockdown": 0.942,
+        "Post-lockdown": 1.15,
     }
     festival_multipliers = {
         "Normal Day": 1.00,
